@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { duration } from '@/tokens'
 import TextInput from '@/components/input/TextInput'
+import Tooltip from '@/components/tooltip/Tooltip'
 import GapPlus from './GapPlus'
 import InlineNote from './InlineNote'
 import './message.css'
@@ -46,12 +47,20 @@ export default function Message({ role, children, editing, onStartEdit, onEdit, 
           />
         </div>
       ) : (
-        <div
-          className={`message__body${isEditable ? ' message__body--editable' : ''}`}
-          onClick={isEditable ? onStartEdit : undefined}
-        >
-          {children}
-        </div>
+        <>
+        { isEditable ? (
+          <Tooltip content="Edit message" placement="top">
+            <div
+              className="message__body message__body--editable"
+              onClick={onStartEdit}
+              >
+              {children}
+            </div>
+          </Tooltip>
+        ) : (
+          <div className="message__body">{children}</div>
+        )}
+        </>
       )}
 
       {!editing && !exiting && (

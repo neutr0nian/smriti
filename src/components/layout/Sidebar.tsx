@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { BookOpen, PanelRight, MessageSquare, SquarePen } from 'lucide-react'
 import SidebarSection from './SidebarSection'
+import Tooltip from '@/components/tooltip/Tooltip'
 import './sidebar.css'
 
 const CHAT_OPTIONS = [
@@ -37,14 +38,16 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
         </button>
 
         {!collapsed && (
-          <button
-            type="button"
-            className="sidebar__collapse-btn"
-            onClick={onToggle}
-            aria-label="Collapse sidebar"
-          >
-            <PanelRight size={16} aria-hidden="true" />
-          </button>
+          <Tooltip content="Collapse sidebar" placement="right">
+            <button
+              type="button"
+              className="sidebar__collapse-btn"
+              onClick={onToggle}
+              aria-label="Collapse sidebar"
+            >
+              <PanelRight size={16} aria-hidden="true" />
+            </button>
+          </Tooltip>
         )}
       </div>
 

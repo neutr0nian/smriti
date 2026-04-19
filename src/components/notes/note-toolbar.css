@@ -1,0 +1,67 @@
+.note-toolbar {
+  position: absolute;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-8);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-input);
+  animation: scale-in var(--duration-fast) var(--ease-enter) both;
+}
+
+/* ── Buttons ── */
+
+.note-toolbar__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-8);
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-linear);
+}
+
+.note-toolbar__btn:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+/* ── Divider ── */
+
+.note-toolbar__divider {
+  width: 1px;
+  height: var(--space-20);
+  background: var(--color-border);
+  flex-shrink: 0;
+  margin: 0 var(--space-2);
+}
+
+/* ── Close ── */
+
+.note-toolbar__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-28);
+  height: var(--space-28);
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-md);
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-linear),
+              color var(--duration-fast) var(--ease-linear);
+}
+
+.note-toolbar__close:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}

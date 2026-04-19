@@ -1,0 +1,85 @@
+.floating-note {
+  position: absolute;
+  cursor: grab;
+  user-select: none;
+}
+
+.floating-note:active {
+  cursor: grabbing;
+}
+
+/* ── Sticky ── */
+
+.floating-note--sticky {
+  padding: var(--space-10) var(--space-12);
+  background: var(--color-sticky);
+  border: 1px solid var(--color-sticky-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-note);
+  transition: box-shadow var(--duration-fast) var(--ease-linear);
+}
+
+.floating-note--sticky:hover {
+  box-shadow: var(--shadow-note-hover);
+}
+
+.floating-note--sticky .floating-note__body {
+  font-family: var(--font-hand);
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  color: var(--color-sticky-ink);
+  min-height: 2em;
+}
+
+/* ── Scribble ── */
+
+.floating-note--scribble {
+  padding: var(--space-4) var(--space-6);
+  background: transparent;
+  width: max-content;
+  max-width: 280px;
+}
+
+.floating-note--scribble .floating-note__body {
+  font-family: var(--font-hand);
+  font-size: var(--text-xl);
+  line-height: var(--leading-snug);
+  color: var(--color-accent);
+  min-height: 1.5em;
+}
+
+/* ── Body ── */
+
+.floating-note__body {
+  outline: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.floating-note__body--placeholder {
+  color: var(--color-ink-muted);
+}
+
+.floating-note--sticky .floating-note__body--placeholder {
+  color: var(--color-sticky-ink);
+  opacity: 0.45;
+}
+
+/* ── Delete ── */
+
+.floating-note__delete {
+  position: absolute;
+  top: calc(-1 * var(--space-8));
+  right: calc(-1 * var(--space-8));
+  width: var(--space-20);
+  height: var(--space-20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  border: none;
+  background: var(--neutral-800);
+  color: var(--neutral-50);
+  cursor: pointer;
+  box-shadow: var(--shadow-note);
+}
