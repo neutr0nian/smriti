@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Claude-Book · Design System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Tokens ── */
+    :root {
+      --color-bg:            #FAF9F5;
+      --color-surface:       #FDFCF8;
+      --color-border:        #E8E3D9;
+      --color-border-subtle: #D9D5CB;
+      --color-ink:           #1A1714;
+      --color-ink-secondary: #4A4540;
+      --color-ink-muted:     #8A8578;
+      --color-accent:        #D97757;
+      --color-accent-soft:   rgba(217,119,87,0.14);
+      --color-sticky:        #FDE89A;
+
+      --neutral-50:  #FAF9F5; --neutral-100: #F3EFE5; --neutral-200: #E8E3D9;
+      --neutral-300: #D9D5CB; --neutral-400: #C4BFB3; --neutral-500: #8A8578;
+      --neutral-600: #5C584F; --neutral-700: #4A4540; --neutral-800: #2D2A25;
+      --neutral-900: #1A1714;
+
+      --orange-50:  #FFF5ED; --orange-100: #FFE8D4; --orange-200: #FFCBA8;
+      --orange-300: #FFA876; --orange-400: #F08050; --orange-500: #D97757;
+      --orange-600: #C4612E; --orange-700: #A34A22; --orange-800: #7D3418;
+      --orange-900: #5C2510;
+
+      --font-serif: Georgia, "Iowan Old Style", serif;
+      --font-sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      --font-hand:  "Caveat", "Bradley Hand", cursive;
+
+      --text-xs: 10px; --text-sm: 12px; --text-base: 15px;
+      --text-lg: 18px; --text-xl: 22px; --text-2xl: 28px; --text-3xl: 36px;
+
+      --weight-regular: 400; --weight-medium: 500;
+      --weight-semibold: 600; --weight-bold: 700;
+
+      --leading-tight: 1.2; --leading-snug: 1.4;
+      --leading-normal: 1.65; --leading-relaxed: 1.75;
+
+      --tracking-tight: -0.5px; --tracking-normal: 0px;
+      --tracking-wide: 1.5px;  --tracking-wider: 2px;
+
+      --space-1: 4px;  --space-2: 8px;   --space-3: 12px; --space-4: 16px;
+      --space-5: 20px; --space-6: 24px;  --space-8: 32px; --space-10: 40px;
+      --space-12: 48px; --space-16: 64px; --space-20: 80px; --space-24: 96px;
+
+      --radius-sm: 2px; --radius-md: 4px; --radius-lg: 8px; --radius-full: 9999px;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--color-bg);
+      color: var(--color-ink);
+      font-family: var(--font-sans);
+      font-size: var(--text-base);
+      line-height: var(--leading-normal);
+      -webkit-font-smoothing: antialiased;
+    }
+    ::selection { background: var(--color-accent-soft); }
+
+    /* ── Typography ── */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-serif);
+      font-weight: var(--weight-bold);
+      line-height: var(--leading-tight);
+      color: var(--color-ink);
+    }
+    h1 { font-size: var(--text-3xl); letter-spacing: var(--tracking-tight); }
+    h2 { font-size: var(--text-2xl); }
+    h3 { font-size: var(--text-xl); }
+    h4 { font-size: var(--text-lg); }
+    h5 { font-size: var(--text-base); font-weight: var(--weight-semibold); font-family: var(--font-sans); }
+    h6 {
+      font-size: var(--text-sm); font-weight: var(--weight-semibold);
+      font-family: var(--font-sans); letter-spacing: var(--tracking-wide);
+      text-transform: uppercase; color: var(--color-ink-muted);
+    }
+    p {
+      font-family: var(--font-serif);
+      font-size: var(--text-base);
+      line-height: var(--leading-relaxed);
+    }
+    small { font-size: var(--text-sm); color: var(--color-ink-muted); }
+
+    /* ── Preview layout ── */
+    .page       { max-width: 800px; margin: 0 auto; padding: var(--space-10) var(--space-6); }
+    .intro-p    { color: var(--color-ink-secondary); margin-bottom: var(--space-10); }
+    hr          { border: none; border-top: 1px solid var(--color-border); margin: var(--space-8) 0; }
+
+    .section         { margin-bottom: var(--space-8); }
+    .section__label  { margin-bottom: var(--space-6); }
+
+    .row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: var(--space-6);
+      align-items: start;
+      padding: var(--space-4) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .row__label {
+      font-size: var(--text-sm);
+      color: var(--color-ink-muted);
+      font-family: var(--font-sans);
+      padding-top: 2px;
+    }
+    .hand-sample {
+      font-family: var(--font-hand);
+      font-size: var(--text-xl);
+      color: var(--color-accent);
+    }
+
+    .swatches { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+    .swatch        { text-align: center; }
+    .swatch__color {
+      width: 72px; height: 48px; border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      margin-bottom: var(--space-2);
+    }
+    .swatch__label, .swatch__value {
+      font-size: var(--text-xs);
+      color: var(--color-ink-muted);
+      font-family: var(--font-sans);
+    }
+    .swatch__value { opacity: 0.8; }
+
+    .spacing-list { display: flex; flex-direction: column; gap: var(--space-3); }
+    .spacing-row  { display: flex; align-items: center; gap: var(--space-4); }
+    .spacing-row__step  { font-size: var(--text-sm); color: var(--color-ink-muted); width: 40px; flex-shrink: 0; }
+    .spacing-row__bar   {
+      height: 20px; border-radius: var(--radius-sm); flex-shrink: 0;
+      background: var(--color-accent-soft);
+      border: 1px solid var(--color-accent);
+    }
+    .spacing-row__value { font-size: var(--text-sm); color: var(--color-ink-muted); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h6 style="margin-bottom: var(--space-2)">Design System</h6>
+  <h1 style="margin-bottom: var(--space-2)">Claude-Book</h1>
+  <p class="intro-p">Font styles, color palette, and spacing tokens — the foundation for every component.</p>
+
+  <hr />
+
+  <!-- Typography -->
+  <section class="section">
+    <h6 class="section__label">Typography</h6>
+    <div class="row"><span class="row__label">h1 · serif 36px bold</span>      <div><h1>The light-dependent reactions</h1></div></div>
+    <div class="row"><span class="row__label">h2 · serif 28px bold</span>      <div><h2>Photosystem II and PSI</h2></div></div>
+    <div class="row"><span class="row__label">h3 · serif 22px bold</span>      <div><h3>The Z-scheme explained</h3></div></div>
+    <div class="row"><span class="row__label">h4 · serif 18px bold</span>      <div><h4>ATP and NADPH output</h4></div></div>
+    <div class="row"><span class="row__label">h5 · sans 15px semibold</span>   <div><h5>Chapter overview</h5></div></div>
+    <div class="row"><span class="row__label">h6 · sans 12px semibold wide</span><div><h6>Section label</h6></div></div>
+    <div class="row">
+      <span class="row__label">p · serif 15px relaxed</span>
+      <div><p>PSII absorbs light and uses the energy to split water molecules, releasing oxygen and high-energy electrons. Those electrons travel down an electron transport chain, pumping protons across the membrane as they go.</p></div>
+    </div>
+    <div class="row"><span class="row__label">small · sans 12px muted</span>   <div><small>Last edited · 2 min ago</small></div></div>
+    <div class="row"><span class="row__label">Caveat · hand 22px</span>        <div><span class="hand-sample">★ memorize the 3 outputs</span></div></div>
+  </section>
+
+  <hr />
+
+  <!-- Semantic Colors -->
+  <section class="section">
+    <h6 class="section__label">Semantic Colors</h6>
+    <div class="swatches">
+      <div class="swatch"><div class="swatch__color" style="background:#FAF9F5"></div><div class="swatch__label">bg</div><div class="swatch__value">#FAF9F5</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#FDFCF8"></div><div class="swatch__label">surface</div><div class="swatch__value">#FDFCF8</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#E8E3D9"></div><div class="swatch__label">border</div><div class="swatch__value">#E8E3D9</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#1A1714"></div><div class="swatch__label">ink</div><div class="swatch__value">#1A1714</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#4A4540"></div><div class="swatch__label">ink secondary</div><div class="swatch__value">#4A4540</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#8A8578"></div><div class="swatch__label">ink muted</div><div class="swatch__value">#8A8578</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#D97757"></div><div class="swatch__label">accent</div><div class="swatch__value">#D97757</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:rgba(217,119,87,0.14)"></div><div class="swatch__label">accent soft</div><div class="swatch__value">rgba…0.14</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#FDE89A"></div><div class="swatch__label">sticky</div><div class="swatch__value">#FDE89A</div></div>
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- Neutral Scale -->
+  <section class="section">
+    <h6 class="section__label">Neutral Scale</h6>
+    <div class="swatches">
+      <div class="swatch"><div class="swatch__color" style="background:#FAF9F5"></div><div class="swatch__label">50</div><div class="swatch__value">#FAF9F5</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#F3EFE5"></div><div class="swatch__label">100</div><div class="swatch__value">#F3EFE5</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#E8E3D9"></div><div class="swatch__label">200</div><div class="swatch__value">#E8E3D9</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#D9D5CB"></div><div class="swatch__label">300</div><div class="swatch__value">#D9D5CB</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#C4BFB3"></div><div class="swatch__label">400</div><div class="swatch__value">#C4BFB3</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#8A8578"></div><div class="swatch__label">500</div><div class="swatch__value">#8A8578</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#5C584F"></div><div class="swatch__label">600</div><div class="swatch__value">#5C584F</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#4A4540"></div><div class="swatch__label">700</div><div class="swatch__value">#4A4540</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#2D2A25"></div><div class="swatch__label">800</div><div class="swatch__value">#2D2A25</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#1A1714"></div><div class="swatch__label">900</div><div class="swatch__value">#1A1714</div></div>
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- Orange Scale -->
+  <section class="section">
+    <h6 class="section__label">Orange Scale</h6>
+    <div class="swatches">
+      <div class="swatch"><div class="swatch__color" style="background:#FFF5ED"></div><div class="swatch__label">50</div><div class="swatch__value">#FFF5ED</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#FFE8D4"></div><div class="swatch__label">100</div><div class="swatch__value">#FFE8D4</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#FFCBA8"></div><div class="swatch__label">200</div><div class="swatch__value">#FFCBA8</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#FFA876"></div><div class="swatch__label">300</div><div class="swatch__value">#FFA876</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#F08050"></div><div class="swatch__label">400</div><div class="swatch__value">#F08050</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#D97757"></div><div class="swatch__label">500</div><div class="swatch__value">#D97757</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#C4612E"></div><div class="swatch__label">600</div><div class="swatch__value">#C4612E</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#A34A22"></div><div class="swatch__label">700</div><div class="swatch__value">#A34A22</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#7D3418"></div><div class="swatch__label">800</div><div class="swatch__value">#7D3418</div></div>
+      <div class="swatch"><div class="swatch__color" style="background:#5C2510"></div><div class="swatch__label">900</div><div class="swatch__value">#5C2510</div></div>
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- Spacing Scale -->
+  <section class="section">
+    <h6 class="section__label">Spacing Scale</h6>
+    <div class="spacing-list">
+      <div class="spacing-row"><span class="spacing-row__step">1</span><div class="spacing-row__bar" style="width:4px"></div><span class="spacing-row__value">4px</span></div>
+      <div class="spacing-row"><span class="spacing-row__step">2</span><div class="spacing-row__bar" style="width:8px"></div><span class="spacing-row__value">8px</span></div>
+      <div class="spacing-row"><span class="spacing-row__step">3</span><div class="spacing-row__bar" style="width:12px"></div><span class="spacing-row__value">12px</span></div>
+      <div class="spacing-row"><span class="spacing-row__step">4</span><div class="spacing-row__bar" style="width:16px"></div><span class="spacing-row__value">16px</span></div>
+      <div class="spacing-row"><span class="spacing-row__step">5</span><div class="spacing-row__bar" style="width:20px"></div><span class="spacing-row__value">20px</span></div>
+      <div class="spacing-row"><span class="spacing-row__step">6</span><div class="spacing-row__bar" style="width:24px"></div><span class="spacing-row__value">24px</span></div>
+      <div class="spacing-row"><span class="spacing-row__step">8</span><div class="spacing-row__bar" style="width:32px"></div><span class="spacing-row__value">32px</span></div>
+      <div class="spacing-row"><span class="spacing-row__step">10</span><div class="spacing-row__bar" style="width:40px"></div><span class="spacing-row__value">40px</span></div>
+      <div class="spacing-row"><span class="spacing-row__step">12</span><div class="spacing-row__bar" style="width:48px"></div><span class="spacing-row__value">48px</span></div>
+      <div class="spacing-row"><span class="spacing-row__step">16</span><div class="spacing-row__bar" style="width:64px"></div><span class="spacing-row__value">64px</span></div>
+      <div class="spacing-row"><span class="spacing-row__step">20</span><div class="spacing-row__bar" style="width:80px"></div><span class="spacing-row__value">80px</span></div>
+      <div class="spacing-row"><span class="spacing-row__step">24</span><div class="spacing-row__bar" style="width:96px"></div><span class="spacing-row__value">96px</span></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

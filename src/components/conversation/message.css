@@ -1,0 +1,37 @@
+.message {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.message__header {
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.message__header--user {
+  color: var(--color-ink-muted);
+}
+
+.message__header--assistant {
+  color: var(--color-accent);
+}
+
+.message__body {
+  font-family: var(--font-serif);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  color: var(--color-ink);
+}
+
+.message__body--editable {
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: background var(--duration-fast) var(--ease-linear);
+}
+
+.message__body--editable:hover {
+  background: var(--color-accent-soft);
+}

@@ -1,0 +1,46 @@
+.button {
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.button:hover {
+  opacity: 0.88;
+}
+
+/* Sizes */
+.button--sm {
+  font-size: var(--text-sm);
+  padding: var(--space-4) var(--space-12);
+}
+
+.button--md {
+  font-size: var(--text-base);
+  padding: var(--space-8) var(--space-16);
+}
+
+.button--lg {
+  font-size: var(--text-lg);
+  padding: var(--space-12) var(--space-24);
+}
+
+/* Colors */
+.button--accent {
+  background: var(--color-accent);
+  color: var(--color-surface);
+}
+
+.button--ink {
+  background: var(--color-ink);
+  color: var(--color-surface);
+}
+
+.button--ghost {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1.5px solid var(--color-border);
+}

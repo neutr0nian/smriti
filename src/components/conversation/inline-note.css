@@ -1,0 +1,34 @@
+.inline-note {
+  border-left: 3px solid var(--color-note);
+  padding: 0 var(--space-12) var(--space-8);
+  margin: var(--space-12) 0;
+}
+
+.inline-note__label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--color-note);
+  margin-bottom: var(--space-8);
+}
+
+.inline-note__body {
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--color-ink);
+}
+
+.inline-note__body::placeholder {
+  color: var(--color-ink-muted);
+}

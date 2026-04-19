@@ -1,0 +1,130 @@
+/*
+  CSS custom properties — mirrors src/tokens/*.ts
+  TS tokens are source of truth; keep these in sync when tokens change.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap');
+
+:root {
+  /* ── Surfaces ── */
+  --color-bg:           #FAF9F5;
+  --color-surface:      #FDFCF8;
+  --color-border:       #E8E3D9;
+  --color-border-subtle:#D9D5CB;
+
+  /* ── Text ── */
+  --color-ink:          #1A1714;
+  --color-ink-secondary:#4A4540;
+  --color-ink-muted:    #8A8578;
+
+  /* ── Accent (Claude orange) ── */
+  --color-accent:       #D97757;
+  --color-accent-hover: #C4612E;
+  --color-accent-soft:  rgba(217, 119, 87, 0.14);
+
+  /* ── Note colors ── */
+  --color-note:          var(--orange-900);
+  --color-sticky:        #FDE89A;
+  --color-sticky-border: #E8C764;
+  --color-sticky-ink:    #3D2F0A;
+
+  /* ── Neutral scale ── */
+  --neutral-50:  #FAF9F5;
+  --neutral-100: #F3EFE5;
+  --neutral-200: #E8E3D9;
+  --neutral-300: #D9D5CB;
+  --neutral-400: #C4BFB3;
+  --neutral-500: #8A8578;
+  --neutral-600: #5C584F;
+  --neutral-700: #4A4540;
+  --neutral-800: #2D2A25;
+  --neutral-900: #1A1714;
+
+  /* ── Orange scale ── */
+  --orange-50:  #FFF5ED;
+  --orange-100: #FFE8D4;
+  --orange-200: #FFCBA8;
+  --orange-300: #FFA876;
+  --orange-400: #F08050;
+  --orange-500: #D97757;
+  --orange-600: #C4612E;
+  --orange-700: #A34A22;
+  --orange-800: #7D3418;
+  --orange-900: #5C2510;
+
+  /* ── Font families ── */
+  --font-serif: Georgia, "Iowan Old Style", serif;
+  --font-sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-hand:  "Caveat", "Bradley Hand", cursive;
+
+  /* ── Type scale ── */
+  --text-xs:   10px;
+  --text-sm:   12px;
+  --text-base: 14px;
+  --text-lg:   16px;
+  --text-xl:   20px;
+  --text-2xl:  24px;
+  --text-3xl:  32px;
+  --text-4xl:  40px;
+
+  /* ── Font weights ── */
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  /* ── Line heights ── */
+  --leading-tight:   1.2;
+  --leading-snug:    1.4;
+  --leading-normal:  1.65;
+  --leading-relaxed: 1.75;
+
+  /* ── Letter spacing ── */
+  --tracking-tight:  -0.5px;
+  --tracking-normal:  0px;
+  --tracking-wide:    1.5px;
+  --tracking-wider:   2px;
+
+  /* ── Spacing (2px base unit — name = px value) ── */
+  --space-2:  2px;
+  --space-4:  4px;
+  --space-6:  6px;
+  --space-8:  8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-14: 14px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-80: 80px;
+  --space-96: 96px;
+
+  /* ── Border radius ── */
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-lg:   8px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-input: 0 4px 16px rgba(138, 133, 120, 0.45);
+  --shadow-paper: 0 1px 3px rgba(0, 0, 0, 0.06), 0 12px 40px rgba(0, 0, 0, 0.08);
+
+  /* ── Decorative ── */
+  --color-margin-rule: rgba(200, 80, 80, 0.25);
+
+  /* ── Duration ── */
+  --duration-instant: 80ms;
+  --duration-fast:    150ms;
+  --duration-base:    220ms;
+  --duration-slow:    350ms;
+
+  /* ── Easing ── */
+  --ease-linear: linear;
+  --ease-enter:  ease-out;
+  --ease-exit:   ease-in;
+}

@@ -1,0 +1,121 @@
+.dropdown {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+}
+
+/* ── Trigger ── */
+
+.dropdown__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-12);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--color-ink);
+  cursor: pointer;
+  user-select: none;
+  transition: border-color var(--duration-fast) var(--ease-linear);
+}
+
+.dropdown__trigger:hover {
+  border-color: var(--color-ink-secondary);
+}
+
+.dropdown__trigger--open {
+  border-color: var(--color-accent);
+}
+
+/* ── Leading icon slot ── */
+
+.dropdown__leading {
+  display: flex;
+  align-items: center;
+  color: var(--color-ink-muted);
+  flex-shrink: 0;
+}
+
+/* ── Label wrapper — locks width to widest possible label ── */
+
+.dropdown__label-wrapper {
+  position: relative;
+  flex: 1;
+  text-align: left;
+}
+
+.dropdown__label {
+  white-space: nowrap;
+}
+
+.dropdown__label--placeholder {
+  color: var(--color-ink-muted);
+}
+
+/* Hidden sizer: contributes width, zero height */
+.dropdown__label-sizer {
+  display: block;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* ── Chevron ── */
+
+.dropdown__chevron {
+  display: flex;
+  align-items: center;
+  color: var(--color-ink-muted);
+  flex-shrink: 0;
+  transition: transform var(--duration-fast) var(--ease-linear);
+}
+
+.dropdown__chevron--open {
+  transform: rotate(180deg);
+}
+
+/* ── Menu ── */
+
+.dropdown__menu {
+  position: absolute;
+  top: calc(100% + var(--space-4));
+  left: 0;
+  right: 0;
+  min-width: 100%;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-input);
+  padding: var(--space-4);
+  z-index: 200;
+  animation: slide-down var(--duration-fast) var(--ease-linear) both;
+}
+
+/* ── Option ── */
+
+.dropdown__option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-linear);
+}
+
+.dropdown__option:hover {
+  background: var(--color-accent-soft);
+}
+
+.dropdown__option--active {
+  color: var(--color-accent);
+  font-weight: var(--weight-medium);
+}

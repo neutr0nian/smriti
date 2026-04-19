@@ -1,0 +1,16 @@
+.app-shell {
+  --sidebar-width: 240px;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-shell--collapsed {
+  --sidebar-width: 52px;
+}
+
+.app-shell__content {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
