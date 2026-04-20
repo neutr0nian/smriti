@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { SidebarProvider, useSidebar } from '@/context/SidebarContext'
 import Sidebar from './Sidebar'
 import './app-shell.css'
 
@@ -7,11 +7,19 @@ interface AppShellProps {
 }
 
 export default function AppShell({ children }: AppShellProps) {
-  const [collapsed, setCollapsed] = useState(false)
+  return (
+    <SidebarProvider>
+      <AppShellInner>{children}</AppShellInner>
+    </SidebarProvider>
+  )
+}
+
+function AppShellInner({ children }: { children: React.ReactNode }) {
+  const { collapsed } = useSidebar()
 
   return (
     <div className={`app-shell${collapsed ? ' app-shell--collapsed' : ''}`}>
-      <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(c => !c)} />
+      <Sidebar />
       <div className="app-shell__content">
         {children}
       </div>

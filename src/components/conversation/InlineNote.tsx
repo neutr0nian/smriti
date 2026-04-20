@@ -1,8 +1,14 @@
 import { useRef, useEffect, useState } from 'react'
 import './inline-note.css'
 
-export default function InlineNote() {
-  const [text, setText] = useState('')
+interface InlineNoteProps {
+  initialText?: string
+  onSave: (text: string) => void
+  onRemove: () => void
+}
+
+export default function InlineNote({ initialText = '', onSave, onRemove }: InlineNoteProps) {
+  const [text, setText] = useState(initialText)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
@@ -20,6 +26,14 @@ export default function InlineNote() {
     el.style.height = `${el.scrollHeight}px`
   }
 
+  const handleBlur = () => {
+    if (text.trim()) {
+      onSave(text)
+    } else {
+      onRemove()
+    }
+  }
+
   return (
     <div className="inline-note animate-slide-down">
       <span className="inline-note__label">Note</span>
@@ -28,6 +42,7 @@ export default function InlineNote() {
         className="inline-note__body"
         value={text}
         onChange={handleChange}
+        onBlur={handleBlur}
         placeholder="Write your note…"
         rows={1}
       />

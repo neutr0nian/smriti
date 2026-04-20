@@ -1,0 +1,12 @@
+.page-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+.response-loader {
+  display: flex;
+  align-items: center;
+  padding: var(--space-12) 0 var(--space-4);
+}

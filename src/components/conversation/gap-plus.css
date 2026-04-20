@@ -1,7 +1,7 @@
 .gap-plus {
   display: flex;
   align-items: center;
-  height: 20px;
+  height: var(--space-14);
   cursor: pointer;
   position: relative;
 }

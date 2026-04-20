@@ -17,8 +17,13 @@ interface MessageProps {
 
 export default function Message({ role, children, editing, onStartEdit, onEdit, onCancelEdit }: MessageProps) {
   const isEditable = role === 'user' && !!onStartEdit
+
+  // Derive message id from children text — stable as long as text doesn't change before save
+  // The actual id is passed via the key in the parent; we need it here for note lookup.
+  // We receive it indirectly: parent sets key={m.id} but we need to pass id explicitly.
+  // For now we track note presence locally and delegate text to context via props.
   const [exiting, setExiting] = useState(false)
-  const [hasNote, setHasNote] = useState(false)
+  const [showNote, setShowNote] = useState(false)
 
   useEffect(() => {
     if (!editing) setExiting(false)
@@ -48,25 +53,30 @@ export default function Message({ role, children, editing, onStartEdit, onEdit, 
         </div>
       ) : (
         <>
-        { isEditable ? (
-          <Tooltip content="Edit message" placement="top">
-            <div
-              className="message__body message__body--editable"
-              onClick={onStartEdit}
+          {isEditable ? (
+            <Tooltip content="Edit message" placement="top">
+              <div
+                className="message__body message__body--editable"
+                onClick={onStartEdit}
               >
-              {children}
-            </div>
-          </Tooltip>
-        ) : (
-          <div className="message__body">{children}</div>
-        )}
+                {children}
+              </div>
+            </Tooltip>
+          ) : (
+            <div className="message__body">{children}</div>
+          )}
         </>
       )}
 
       {!editing && !exiting && (
         <>
-          {!hasNote && <GapPlus onAdd={() => setHasNote(true)} />}
-          {hasNote && <InlineNote />}
+          {!showNote && <GapPlus onAdd={() => setShowNote(true)} />}
+          {showNote && (
+            <InlineNote
+              onSave={() => setShowNote(true)}
+              onRemove={() => setShowNote(false)}
+            />
+          )}
         </>
       )}
     </div>

@@ -1,28 +1,13 @@
-import { useState } from 'react'
-import { BookOpen, PanelRight, MessageSquare, SquarePen } from 'lucide-react'
+import { BookOpen, PanelRight, SquarePen } from 'lucide-react'
 import SidebarSection from './SidebarSection'
 import Tooltip from '@/components/tooltip/Tooltip'
+import { useSidebar } from '@/context/SidebarContext'
 import './sidebar.css'
 
-const CHAT_OPTIONS = [
-  { value: 'c1', label: 'Light-dependent reactions' },
-  { value: 'c2', label: 'Calvin Cycle overview' },
-  { value: 'c3', label: 'Chloroplast structure' },
-]
+export default function Sidebar() {
+  const { conversationList, activeConversationId, setActiveConversationId, collapsed, toggleSidebar } = useSidebar()
 
-const NOTE_OPTIONS = [
-  { value: 'n1', label: 'Photosystem II notes' },
-  { value: 'n2', label: 'ATP synthesis summary' },
-]
-
-interface SidebarProps {
-  collapsed: boolean
-  onToggle: () => void
-}
-
-export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
-  const [activeChat, setActiveChat] = useState('c1')
-  const [activeNote, setActiveNote] = useState('n1')
+  const items = conversationList.map(c => ({ value: c.id, label: c.title }))
 
   return (
     <aside className={`sidebar${collapsed ? ' sidebar--collapsed' : ''}`}>
@@ -30,7 +15,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <button
           type="button"
           className="sidebar__logo"
-          onClick={collapsed ? onToggle : undefined}
+          onClick={collapsed ? toggleSidebar : undefined}
           aria-label={collapsed ? 'Expand sidebar' : undefined}
         >
           <BookOpen size={18} aria-hidden="true" />
@@ -42,7 +27,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
             <button
               type="button"
               className="sidebar__collapse-btn"
-              onClick={onToggle}
+              onClick={toggleSidebar}
               aria-label="Collapse sidebar"
             >
               <PanelRight size={16} aria-hidden="true" />
@@ -53,22 +38,13 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
       <nav className="sidebar__nav">
         <SidebarSection
-          label="Chats"
-          icon={<MessageSquare size={16} />}
-          items={CHAT_OPTIONS}
-          value={activeChat}
-          onChange={setActiveChat}
-          collapsed={collapsed}
-          onExpand={onToggle}
-        />
-        <SidebarSection
           label="Notes"
           icon={<SquarePen size={16} />}
-          items={NOTE_OPTIONS}
-          value={activeNote}
-          onChange={setActiveNote}
+          items={items}
+          value={activeConversationId}
+          onChange={setActiveConversationId}
           collapsed={collapsed}
-          onExpand={onToggle}
+          onExpand={toggleSidebar}
         />
       </nav>
     </aside>

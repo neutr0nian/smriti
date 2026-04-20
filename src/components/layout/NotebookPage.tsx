@@ -1,23 +1,16 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import NoteToolbar from '@/components/notes/NoteToolbar'
 import FloatingNote from '@/components/notes/FloatingNote'
-import type { FloatingNote as FloatingNoteData } from '@/types/notes'
+import { useConversation } from '@/context/ConversationContext'
 import './notebook-page.css'
 
 interface NotebookPageProps {
   children: React.ReactNode
 }
 
-let _noteId = 0
-const makeId = () => `note-${++_noteId}`
-
-const NOTE_DEFAULTS: Record<FloatingNoteData['kind'], { w: number; rot: number }> = {
-  sticky:  { w: 180, rot: -1.5 },
-  scribble: { w: 220, rot: -2 },
-}
-
 export default function NotebookPage({ children }: NotebookPageProps) {
-  const [notes, setNotes] = useState<FloatingNoteData[]>([])
+  const { floatingNotes, addNote, moveNote, updateNote, deleteNote } = useConversation()
+
   const [editingId, setEditingId] = useState<string | null>(null)
   const [toolbar, setToolbar] = useState<{ x: number; y: number } | null>(null)
   const [dragging, setDragging] = useState<{ id: string; dx: number; dy: number } | null>(null)
@@ -33,7 +26,7 @@ export default function NotebookPage({ children }: NotebookPageProps) {
       const paperRect = paperRef.current.getBoundingClientRect()
       const x = Math.max(0, e.clientX - paperRect.left - dragging.dx)
       const y = Math.max(0, e.clientY - paperRect.top - dragging.dy)
-      setNotes(ns => ns.map(n => n.id === dragging.id ? { ...n, x, y } : n))
+      moveNote(dragging.id, x, y)
     }
     const onUp = () => setDragging(null)
     document.addEventListener('mousemove', onMove)
@@ -42,7 +35,7 @@ export default function NotebookPage({ children }: NotebookPageProps) {
       document.removeEventListener('mousemove', onMove)
       document.removeEventListener('mouseup', onUp)
     }
-  }, [dragging])
+  }, [dragging, moveNote])
 
   // ── Zone detection ──
   const isInStickyZone = useCallback((clientX: number): boolean => {
@@ -63,21 +56,16 @@ export default function NotebookPage({ children }: NotebookPageProps) {
     if (!paperRef.current) return
     if (isInStickyZone(e.clientX)) {
       const paperRect = paperRef.current.getBoundingClientRect()
-      setToolbar({
-        x: e.clientX - paperRect.left,
-        y: e.clientY - paperRect.top,
-      })
+      setToolbar({ x: e.clientX - paperRect.left, y: e.clientY - paperRect.top })
     } else {
       setToolbar(null)
     }
   }
 
-  const handleAddNote = (kind: FloatingNoteData['kind']) => {
+  const handleAddNote = (kind: 'sticky' | 'scribble') => {
     if (!toolbar) return
-    const id = makeId()
-    setNotes(ns => [...ns, { id, kind, x: toolbar.x, y: toolbar.y, text: '', ...NOTE_DEFAULTS[kind] }])
+    addNote(kind, toolbar.x, toolbar.y)
     setToolbar(null)
-    setEditingId(id)
   }
 
   return (
@@ -98,21 +86,15 @@ export default function NotebookPage({ children }: NotebookPageProps) {
 
           <p className="notebook-page__page-number">— 1 —</p>
 
-          {notes.map(note => (
+          {floatingNotes.map(note => (
             <FloatingNote
               key={note.id}
               note={note}
               editing={editingId === note.id}
               onEdit={() => setEditingId(note.id)}
-              onBlur={(text) => {
-                setNotes(ns => ns.map(n => n.id === note.id ? { ...n, text } : n))
-                setEditingId(null)
-              }}
-              onDelete={() => setNotes(ns => ns.filter(n => n.id !== note.id))}
-              onDragStart={(e, dx, dy) => {
-                e.stopPropagation()
-                setDragging({ id: note.id, dx, dy })
-              }}
+              onBlur={(text) => { updateNote(note.id, text); setEditingId(null) }}
+              onDelete={() => deleteNote(note.id)}
+              onDragStart={(e, dx, dy) => { e.stopPropagation(); setDragging({ id: note.id, dx, dy }) }}
             />
           ))}
 
