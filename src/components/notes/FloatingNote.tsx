@@ -42,7 +42,7 @@ export default function FloatingNote({ note, editing, onEdit, onBlur, onDelete, 
 
   return (
     <div
-      className={`floating-note floating-note--${note.kind}`}
+      className={`floating-note floating-note--${note.kind}${editing ? ' floating-note--editing' : ''}`}
       style={{ left: note.x, top: note.y, ...(note.kind === 'sticky' && { width: note.w }), transform: `rotate(${note.rot}deg)` }}
       onMouseDown={handleMouseDown}
       onDoubleClick={(e) => { e.stopPropagation(); onEdit() }}

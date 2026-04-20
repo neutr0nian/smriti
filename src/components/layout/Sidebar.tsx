@@ -34,7 +34,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
           aria-label={collapsed ? 'Expand sidebar' : undefined}
         >
           <BookOpen size={18} aria-hidden="true" />
-          <h3>Smriti</h3>
+          <h3>Claude Book</h3>
         </button>
 
         {!collapsed && (

@@ -19,7 +19,8 @@
   transition: box-shadow var(--duration-fast) var(--ease-linear);
 }
 
-.floating-note--sticky:hover {
+.floating-note--sticky:hover,
+.floating-note--sticky:active {
   box-shadow: var(--shadow-note-hover);
 }
 
@@ -36,8 +37,15 @@
 .floating-note--scribble {
   padding: var(--space-4) var(--space-6);
   background: transparent;
+  border-radius: var(--radius-md);
   width: max-content;
+  min-width: calc(var(--space-96) + var(--space-48));
   max-width: 280px;
+  transition: box-shadow var(--duration-fast) var(--ease-linear);
+}
+
+.floating-note--scribble:active {
+  box-shadow: var(--shadow-note);
 }
 
 .floating-note--scribble .floating-note__body {
@@ -46,6 +54,20 @@
   line-height: var(--leading-snug);
   color: var(--color-accent);
   min-height: 1.5em;
+}
+
+/* ── Editing ── */
+
+.floating-note--editing .floating-note__body {
+  cursor: text;
+  user-select: text;
+}
+
+.floating-note--scribble.floating-note--editing {
+  background: var(--color-surface);
+  border: 1px dashed var(--color-accent);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-note);
 }
 
 /* ── Body ── */

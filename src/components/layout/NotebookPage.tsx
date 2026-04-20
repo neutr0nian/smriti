@@ -23,17 +23,16 @@ export default function NotebookPage({ children }: NotebookPageProps) {
   const [dragging, setDragging] = useState<{ id: string; dx: number; dy: number } | null>(null)
 
   const paperRef = useRef<HTMLDivElement>(null)
-  const deskRef = useRef<HTMLElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
 
   // ── Drag ──
   useEffect(() => {
     if (!dragging) return
     const onMove = (e: MouseEvent) => {
-      if (!paperRef.current || !deskRef.current) return
+      if (!paperRef.current) return
       const paperRect = paperRef.current.getBoundingClientRect()
       const x = Math.max(0, e.clientX - paperRect.left - dragging.dx)
-      const y = Math.max(0, e.clientY - paperRect.top + deskRef.current.scrollTop - dragging.dy)
+      const y = Math.max(0, e.clientY - paperRect.top - dragging.dy)
       setNotes(ns => ns.map(n => n.id === dragging.id ? { ...n, x, y } : n))
     }
     const onUp = () => setDragging(null)
@@ -61,12 +60,12 @@ export default function NotebookPage({ children }: NotebookPageProps) {
   }
 
   const handlePaperClick = (e: React.MouseEvent) => {
-    if (!paperRef.current || !deskRef.current) return
+    if (!paperRef.current) return
     if (isInStickyZone(e.clientX)) {
       const paperRect = paperRef.current.getBoundingClientRect()
       setToolbar({
         x: e.clientX - paperRect.left,
-        y: e.clientY - paperRect.top + deskRef.current.scrollTop,
+        y: e.clientY - paperRect.top,
       })
     } else {
       setToolbar(null)
@@ -83,7 +82,7 @@ export default function NotebookPage({ children }: NotebookPageProps) {
 
   return (
     <div className="notebook-page">
-      <main ref={deskRef as React.RefObject<HTMLElement>} className="notebook-page__desk">
+      <main className="notebook-page__desk">
         <div
           ref={paperRef}
           className="notebook-page__paper"
