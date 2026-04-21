@@ -1,0 +1,14 @@
+export type MessageRole = 'user' | 'assistant' | 'system'
+
+export interface ChatMessage {
+  role: MessageRole
+  content: string
+}
+
+export interface ChatRequest {
+  messages: ChatMessage[]
+}
+
+export interface ChatResponse {
+  text: string
+}

@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { duration } from '@/tokens'
 import TextInput from '@/components/input/TextInput'
 import Tooltip from '@/components/tooltip/Tooltip'
 import GapPlus from './GapPlus'
 import InlineNote from './InlineNote'
+import { useConversation } from '@/context/ConversationContext'
 import './message.css'
 
 interface MessageProps {
+  messageId: string
   role: 'user' | 'assistant'
   children: React.ReactNode
   editing?: boolean
@@ -15,15 +18,15 @@ interface MessageProps {
   onCancelEdit?: () => void
 }
 
-export default function Message({ role, children, editing, onStartEdit, onEdit, onCancelEdit }: MessageProps) {
+export default function Message({ messageId, role, children, editing, onStartEdit, onEdit, onCancelEdit }: MessageProps) {
   const isEditable = role === 'user' && !!onStartEdit
+  const { inlineNotes, setInlineNote, removeInlineNote } = useConversation()
 
-  // Derive message id from children text — stable as long as text doesn't change before save
-  // The actual id is passed via the key in the parent; we need it here for note lookup.
-  // We receive it indirectly: parent sets key={m.id} but we need to pass id explicitly.
-  // For now we track note presence locally and delegate text to context via props.
+  const existingNote = inlineNotes.find(n => n.messageId === messageId)
+  const [localOpen, setLocalOpen] = useState(false)
+  const showNote = !!existingNote || localOpen
+
   const [exiting, setExiting] = useState(false)
-  const [showNote, setShowNote] = useState(false)
 
   useEffect(() => {
     if (!editing) setExiting(false)
@@ -63,18 +66,21 @@ export default function Message({ role, children, editing, onStartEdit, onEdit, 
               </div>
             </Tooltip>
           ) : (
-            <div className="message__body">{children}</div>
+            <div className="message__body message__body--markdown">
+              <ReactMarkdown>{typeof children === 'string' ? children : ''}</ReactMarkdown>
+            </div>
           )}
         </>
       )}
 
       {!editing && !exiting && (
         <>
-          {!showNote && <GapPlus onAdd={() => setShowNote(true)} />}
+          {!showNote && <GapPlus onAdd={() => setLocalOpen(true)} />}
           {showNote && (
             <InlineNote
-              onSave={() => setShowNote(true)}
-              onRemove={() => setShowNote(false)}
+              initialText={existingNote?.text}
+              onSave={(text) => { setInlineNote(messageId, text); setLocalOpen(false) }}
+              onRemove={() => { removeInlineNote(messageId); setLocalOpen(false) }}
             />
           )}
         </>

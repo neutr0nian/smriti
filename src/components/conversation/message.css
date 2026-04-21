@@ -26,6 +26,32 @@
   color: var(--color-ink);
 }
 
+.message__body--markdown p { margin: 0 0 var(--space-8); }
+.message__body--markdown p:last-child { margin-bottom: 0; }
+
+.message__body--markdown ul,
+.message__body--markdown ol {
+  margin: var(--space-4) 0 var(--space-8) var(--space-20);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.message__body--markdown li { line-height: var(--leading-relaxed); }
+
+.message__body--markdown strong {
+  font-weight: var(--weight-semibold);
+  color: var(--color-ink);
+}
+
+.message__body--markdown code {
+  font-family: monospace;
+  font-size: 0.9em;
+  background: var(--neutral-100);
+  padding: 1px var(--space-4);
+  border-radius: var(--radius-sm);
+}
+
 .message__body--editable {
   cursor: pointer;
   border-radius: var(--radius-md);

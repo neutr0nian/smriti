@@ -1,12 +1,15 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react'
-import type { MessageData, InlineNote, ConversationData } from '@/types/conversation'
+import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react'
+import type { MessageData, InlineNote } from '@/types/conversation'
 import type { FloatingNote } from '@/types/notes'
-import { fetchConversation } from '@/mocks/conversations'
+import type { ApiChatRequest } from '@/types/api'
+import { useStreamPost } from '@/hooks/useStreamPost'
 import { useSidebar } from './SidebarContext'
 
+const API_URL = 'http://localhost:3001'
+
 interface ConversationContextValue {
-  loading: boolean
   responding: boolean
+  responseError: string | null
   title: string
   subtitle: string
   messages: MessageData[]
@@ -35,53 +38,55 @@ const NOTE_DEFAULTS: Record<FloatingNote['kind'], { w: number; rot: number }> = 
   scribble: { w: 220, rot: -2 },
 }
 
-const MOCK_REPLIES = [
-  "That's a great question — let me break it down for you.",
-  "Good thinking. The key thing to understand here is the relationship between structure and function.",
-  "Exactly right. This connects directly to what we covered in the previous chapter.",
-]
-
 export function ConversationProvider({ children }: { children: React.ReactNode }) {
-  const { activeConversationId } = useSidebar()
+  const { activeConversationId, conversationList } = useSidebar()
 
-  const [loading, setLoading] = useState(true)
-  const [responding, setResponding] = useState(false)
-  const [title, setTitle] = useState('')
-  const [subtitle, setSubtitle] = useState('')
+  const messagesRef = useRef<MessageData[]>([])
+  const { streaming: responding, error: responseError, execute: streamChat } =
+    useStreamPost(`${API_URL}/api/chat`)
+
   const [messages, setMessages] = useState<MessageData[]>([])
   const [floatingNotes, setFloatingNotes] = useState<FloatingNote[]>([])
   const [inlineNotes, setInlineNotes] = useState<InlineNote[]>([])
 
+  // Reset conversation state when active conversation changes
   useEffect(() => {
-    let cancelled = false
-    setLoading(true)
-
-    fetchConversation(activeConversationId).then(result => {
-      if (cancelled || !result) return
-      const { data, floatingNotes: notes } = result
-      setTitle(data.title)
-      setSubtitle(data.subtitle)
-      setMessages(data.messages)
-      setInlineNotes(data.inlineNotes)
-      setFloatingNotes(notes)
-      setLoading(false)
-    })
-
-    return () => { cancelled = true }
+    setMessages([])
+    setFloatingNotes([])
+    setInlineNotes([])
+    messagesRef.current = []
   }, [activeConversationId])
 
-  const sendMessage = useCallback((text: string) => {
-    const userMsg: MessageData = { id: makeMsgId(), role: 'user', text }
-    setMessages(ms => [...ms, userMsg])
-    setResponding(true)
+  const activeConversation = conversationList.find(c => c.id === activeConversationId)
+  const title = activeConversation?.title ?? ''
+  const subtitle = activeConversation?.subtitle ?? ''
 
-    setTimeout(() => {
-      const reply = MOCK_REPLIES[Math.floor(Math.random() * MOCK_REPLIES.length)]
-      const assistantMsg: MessageData = { id: makeMsgId(), role: 'assistant', text: reply }
-      setMessages(ms => [...ms, assistantMsg])
-      setResponding(false)
-    }, 1800)
-  }, [])
+  const sendMessage = useCallback(async (text: string) => {
+    const userMsg: MessageData = { id: makeMsgId(), role: 'user', text }
+    const updatedMessages = [...messagesRef.current, userMsg]
+    setMessages(updatedMessages)
+    messagesRef.current = updatedMessages
+
+    const assistantId = makeMsgId()
+    const assistantMsg: MessageData = { id: assistantId, role: 'assistant', text: '' }
+    setMessages(ms => [...ms, assistantMsg])
+    messagesRef.current = [...messagesRef.current, assistantMsg]
+
+    let streamedText = ''
+    await streamChat<ApiChatRequest>(
+      { messages: updatedMessages.map(m => ({ role: m.role, content: m.text })) },
+      (chunk) => {
+        streamedText += chunk
+        setMessages(ms => ms.map(m =>
+          m.id === assistantId ? { ...m, text: streamedText } : m
+        ))
+      },
+    )
+
+    messagesRef.current = messagesRef.current.map(m =>
+      m.id === assistantId ? { ...m, text: streamedText } : m
+    )
+  }, [streamChat])
 
   const editMessage = useCallback((id: string, text: string) => {
     setMessages(ms => ms.map(m => m.id === id ? { ...m, text } : m))
@@ -126,7 +131,7 @@ export function ConversationProvider({ children }: { children: React.ReactNode }
 
   return (
     <ConversationContext.Provider value={{
-      loading, responding, title, subtitle,
+      responding, responseError, title, subtitle,
       messages, floatingNotes, inlineNotes,
       sendMessage, editMessage,
       addNote, moveNote, updateNote, deleteNote,

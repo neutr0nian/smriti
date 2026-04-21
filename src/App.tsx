@@ -22,16 +22,8 @@ export default function App() {
 }
 
 function PageContent() {
-  const { loading, responding, title, subtitle, messages, sendMessage, editMessage } = useConversation()
+  const { responding, responseError, title, subtitle, messages, sendMessage, editMessage } = useConversation()
   const [editingId, setEditingId] = useState<string | null>(null)
-
-  if (loading) {
-    return (
-      <div className="page-loader">
-        <LoaderIcon size={28} color="var(--color-accent)" />
-      </div>
-    )
-  }
 
   return (
     <>
@@ -40,6 +32,7 @@ function PageContent() {
         {messages.map(m => (
           <Message
             key={m.id}
+            messageId={m.id}
             role={m.role}
             editing={editingId === m.id}
             onStartEdit={m.role === 'user' ? () => setEditingId(m.id) : undefined}
@@ -53,6 +46,9 @@ function PageContent() {
           <div className="response-loader">
             <LoaderIcon size={20} color="var(--color-ink-muted)" />
           </div>
+        )}
+        {responseError && (
+          <div className="response-error">{responseError}</div>
         )}
       </Conversation>
       <TextInput onSubmit={sendMessage} />
