@@ -18,9 +18,10 @@
   --color-ink-muted:    #8A8578;
 
   /* ── Accent (Claude orange) ── */
-  --color-accent:       #D97757;
-  --color-accent-hover: #C4612E;
-  --color-accent-soft:  rgba(217, 119, 87, 0.14);
+  --color-accent:          #D97757;
+  --color-accent-hover:    #C4612E;
+  --color-accent-soft:     rgba(217, 119, 87, 0.14);
+  --color-accent-disabled: var(--orange-200);
 
   /* ── Note colors ── */
   --color-note:          var(--orange-900);

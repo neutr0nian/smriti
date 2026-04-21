@@ -2,6 +2,8 @@ export interface MessageData {
   id: string
   role: 'user' | 'assistant'
   text: string
+  versions?: string[]
+  versionIndex?: number
 }
 
 export interface InlineNote {

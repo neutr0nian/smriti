@@ -20,6 +20,8 @@
 }
 
 .message__body {
+  cursor: pointer;
+
   font-family: var(--font-serif);
   font-size: var(--text-base);
   line-height: var(--leading-relaxed);
@@ -52,12 +54,3 @@
   border-radius: var(--radius-sm);
 }
 
-.message__body--editable {
-  cursor: pointer;
-  border-radius: var(--radius-md);
-  transition: background var(--duration-fast) var(--ease-linear);
-}
-
-.message__body--editable:hover {
-  background: var(--color-accent-soft);
-}

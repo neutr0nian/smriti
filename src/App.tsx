@@ -22,7 +22,7 @@ export default function App() {
 }
 
 function PageContent() {
-  const { responding, responseError, title, subtitle, messages, sendMessage, editMessage } = useConversation()
+  const { responding, responseError, title, subtitle, messages, sendMessage, editMessage, retryMessage } = useConversation()
   const [editingId, setEditingId] = useState<string | null>(null)
 
   return (
@@ -35,9 +35,12 @@ function PageContent() {
             messageId={m.id}
             role={m.role}
             editing={editingId === m.id}
+            versions={m.versions}
+            versionIndex={m.versionIndex}
             onStartEdit={m.role === 'user' ? () => setEditingId(m.id) : undefined}
             onEdit={(text) => { editMessage(m.id, text); setEditingId(null) }}
             onCancelEdit={() => setEditingId(null)}
+            onRetry={m.role === 'assistant' ? () => retryMessage(m.id) : undefined}
           >
             {m.text}
           </Message>
@@ -51,7 +54,7 @@ function PageContent() {
           <div className="response-error">{responseError}</div>
         )}
       </Conversation>
-      <TextInput onSubmit={sendMessage} />
+      <TextInput onSubmit={sendMessage} disabled={responding} />
     </>
   )
 }

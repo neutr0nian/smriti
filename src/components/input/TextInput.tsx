@@ -9,6 +9,7 @@ interface TextInputProps {
   initialValue?: string
   submitLabel?: string
   variant?: 'fixed' | 'inline'
+  disabled?: boolean
 }
 
 export default function TextInput({
@@ -18,6 +19,7 @@ export default function TextInput({
   initialValue = '',
   submitLabel = 'Ask',
   variant = 'fixed',
+  disabled,
 }: TextInputProps) {
   const [value, setValue] = useState(initialValue)
   const [multiLine, setMultiLine] = useState(false)
@@ -91,7 +93,7 @@ export default function TextInput({
         rows={1}
       />
       <div className="text-input__actions">
-        <Button text={submitLabel} color="accent" size="md" type="submit" />
+        <Button text={submitLabel} color="accent" size="md" type="submit" disabled={disabled} />
       </div>
     </form>
   )

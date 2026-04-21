@@ -40,9 +40,10 @@ export const colors = {
   inkMuted:     neutral[500],
 
   // Accent
-  accent:     orange[500],
-  accentHover: orange[600],
-  accentSoft: 'rgba(217,119,87,0.14)',
+  accent:         orange[500],
+  accentHover:    orange[600],
+  accentSoft:     'rgba(217,119,87,0.14)',
+  accentDisabled: orange[200],
 
   // Note colors
   sticky:       '#FDE89A',

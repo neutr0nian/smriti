@@ -23,7 +23,7 @@
 
 .notebook-page__margin-rule {
   position: absolute;
-  left: 70px;
+  left: 84px;
   top: 0;
   bottom: 0;
   width: 1px;
@@ -32,8 +32,8 @@
 }
 
 .notebook-page__content {
-  max-width: 640px;
-  margin: 0 auto;
+  max-width: 700px;
+  margin: 0 auto 0 160px;
   padding: var(--space-64) 0 var(--space-96);
 }
 
