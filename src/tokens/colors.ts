@@ -29,15 +29,17 @@ export const orange = {
 // Semantic aliases — use these in components, not raw scales
 export const colors = {
   // Surfaces
-  bg:         neutral[50],
-  surface:    '#FDFCF8',
-  border:     neutral[200],
+  bg:           neutral[50],
+  surface:      '#FDFCF8',
+  surfaceHover: 'rgba(26, 23, 20, 0.04)',
+  border:       neutral[200],
   borderSubtle: neutral[300],
 
   // Text
   inkPrimary:   neutral[900],
   inkSecondary: neutral[700],
   inkMuted:     neutral[500],
+  inkDisabled:  neutral[400],
 
   // Accent
   accent:         orange[500],

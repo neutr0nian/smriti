@@ -9,6 +9,7 @@
   /* ── Surfaces ── */
   --color-bg:           #FAF9F5;
   --color-surface:      #FDFCF8;
+  --color-surface-hover: rgba(26, 23, 20, 0.04);
   --color-border:       #E8E3D9;
   --color-border-subtle:#D9D5CB;
 
@@ -16,6 +17,7 @@
   --color-ink:          #1A1714;
   --color-ink-secondary:#4A4540;
   --color-ink-muted:    #8A8578;
+  --color-ink-disabled: var(--neutral-400);
 
   /* ── Accent (Claude orange) ── */
   --color-accent:          #D97757;

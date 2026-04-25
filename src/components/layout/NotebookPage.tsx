@@ -9,7 +9,7 @@ interface NotebookPageProps {
 }
 
 export default function NotebookPage({ children }: NotebookPageProps) {
-  const { floatingNotes, addNote, moveNote, updateNote, deleteNote } = useConversation()
+  const { floatingNotes, addNote, moveNote, commitNoteMove, updateNote, deleteNote } = useConversation()
 
   const [editingId, setEditingId] = useState<string | null>(null)
   const [toolbar, setToolbar] = useState<{ x: number; y: number } | null>(null)
@@ -17,6 +17,7 @@ export default function NotebookPage({ children }: NotebookPageProps) {
 
   const paperRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
+  const lastDragPosRef = useRef<{ x: number; y: number } | null>(null)
 
   // ── Drag ──
   useEffect(() => {
@@ -26,16 +27,22 @@ export default function NotebookPage({ children }: NotebookPageProps) {
       const paperRect = paperRef.current.getBoundingClientRect()
       const x = Math.max(0, e.clientX - paperRect.left - dragging.dx)
       const y = Math.max(0, e.clientY - paperRect.top - dragging.dy)
+      lastDragPosRef.current = { x, y }
       moveNote(dragging.id, x, y)
     }
-    const onUp = () => setDragging(null)
+    const onUp = () => {
+      const pos = lastDragPosRef.current
+      if (pos) void commitNoteMove(dragging.id, pos.x, pos.y)
+      lastDragPosRef.current = null
+      setDragging(null)
+    }
     document.addEventListener('mousemove', onMove)
     document.addEventListener('mouseup', onUp)
     return () => {
       document.removeEventListener('mousemove', onMove)
       document.removeEventListener('mouseup', onUp)
     }
-  }, [dragging, moveNote])
+  }, [dragging, moveNote, commitNoteMove])
 
   // ── Zone detection ──
   const isInStickyZone = useCallback((clientX: number): boolean => {

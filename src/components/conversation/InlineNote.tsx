@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
+import { X } from 'lucide-react'
 import './inline-note.css'
 
 interface InlineNoteProps {
@@ -9,6 +10,7 @@ interface InlineNoteProps {
 
 export default function InlineNote({ initialText = '', onSave, onRemove }: InlineNoteProps) {
   const [text, setText] = useState(initialText)
+  const removingRef = useRef(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
@@ -27,6 +29,7 @@ export default function InlineNote({ initialText = '', onSave, onRemove }: Inlin
   }
 
   const handleBlur = () => {
+    if (removingRef.current) return
     if (text.trim()) {
       onSave(text)
     } else {
@@ -34,9 +37,24 @@ export default function InlineNote({ initialText = '', onSave, onRemove }: Inlin
     }
   }
 
+  const handleDelete = () => {
+    removingRef.current = true
+    onRemove()
+  }
+
   return (
     <div className="inline-note animate-slide-down">
-      <span className="inline-note__label">Note</span>
+      <div className="inline-note__header">
+        <span className="inline-note__label">Note</span>
+        <button
+          type="button"
+          className="inline-note__delete"
+          onMouseDown={(e) => { e.preventDefault(); handleDelete() }}
+          aria-label="Delete note"
+        >
+          <X size={12} aria-hidden="true" />
+        </button>
+      </div>
       <textarea
         ref={textareaRef}
         className="inline-note__body"

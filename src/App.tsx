@@ -22,12 +22,12 @@ export default function App() {
 }
 
 function PageContent() {
-  const { responding, responseError, title, subtitle, messages, sendMessage, editMessage, retryMessage } = useConversation()
+  const { responding, responseError, messages, sendMessage, editMessage, retryMessage } = useConversation()
   const [editingId, setEditingId] = useState<string | null>(null)
 
   return (
     <>
-      <ConversationTitle subject={subtitle} title={title} />
+      <ConversationTitle />
       <Conversation>
         {messages.map(m => (
           <Message

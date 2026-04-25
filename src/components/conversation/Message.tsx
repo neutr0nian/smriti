@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { Pencil, RotateCcw, StickyNote, ChevronLeft, ChevronRight } from 'lucide-react'
 import { duration } from '@/tokens'
 import { blocksToText } from '@/types/conversation'
 import type { MessageBlock } from '@/types/conversation'
 import TextInput from '@/components/input/TextInput'
 import InlineNote from './InlineNote'
-import MessageToolbar from './MessageToolbar'
+import Toolbar, { type ToolbarTool } from '@/components/toolbar/Toolbar'
 import P5Sketch from './P5Sketch'
 import { useConversation } from '@/context/ConversationContext'
 import './message.css'
@@ -28,7 +29,7 @@ export default function Message({
   versions, versionIndex = 0,
   onStartEdit, onEdit, onCancelEdit, onRetry,
 }: MessageProps) {
-  const { inlineNotes, setInlineNote, removeInlineNote } = useConversation()
+  const { inlineNotes, setInlineNote, removeInlineNote, setVersionIndex } = useConversation()
 
   const existingNote = inlineNotes.find(n => n.messageId === messageId)
   const [localOpen, setLocalOpen] = useState(false)
@@ -50,13 +51,6 @@ export default function Message({
     const t = setTimeout(() => setSlideDir(null), parseInt(duration.fast))
     return () => clearTimeout(t)
   }, [versionIndex])
-
-  useEffect(() => {
-    if (!toolbar) return
-    const close = () => setToolbar(null)
-    document.addEventListener('mousedown', close)
-    return () => document.removeEventListener('mousedown', close)
-  }, [toolbar])
 
   const handleClose = (action: () => void) => {
     setExiting(true)
@@ -105,20 +99,50 @@ export default function Message({
         </div>
       )}
 
-      {toolbar && (
-        <MessageToolbar
-          messageId={messageId}
-          role={role}
-          x={toolbar.x}
-          y={toolbar.y}
-          versions={versions}
-          versionIndex={versionIndex}
-          onEdit={onStartEdit}
-          onNote={() => setLocalOpen(o => !o)}
-          onRetry={onRetry}
-          onClose={() => setToolbar(null)}
-        />
-      )}
+      {toolbar && (() => {
+        const close = () => setToolbar(null)
+        const tools: ToolbarTool[] = []
+        if (role === 'user' && onStartEdit) {
+          tools.push({ icon: <Pencil size={14} />, label: 'Edit', onClick: () => { onStartEdit(); close() } })
+        }
+        tools.push({ icon: <StickyNote size={14} />, label: 'Add note', onClick: () => { setLocalOpen(o => !o); close() } })
+        if (versions && versions.length > 1) {
+          tools.push({
+            kind: 'group',
+            bordered: true,
+            items: [
+              {
+                icon: <ChevronLeft size={14} />,
+                label: 'Previous version',
+                onClick: () => setVersionIndex(messageId, versionIndex - 1),
+                disabled: versionIndex === 0,
+              },
+              {
+                kind: 'custom',
+                render: () => <span className="toolbar__counter">{versionIndex + 1}/{versions.length}</span>,
+              },
+              {
+                icon: <ChevronRight size={14} />,
+                label: 'Next version',
+                onClick: () => setVersionIndex(messageId, versionIndex + 1),
+                disabled: versionIndex === versions.length - 1,
+              },
+            ],
+          })
+        }
+        if (onRetry) {
+          tools.push({ icon: <RotateCcw size={14} />, label: 'Retry', onClick: () => { onRetry(); close() } })
+        }
+        return (
+          <Toolbar
+            x={toolbar.x}
+            y={toolbar.y}
+            placement="above-centered"
+            tools={tools}
+            onClose={close}
+          />
+        )
+      })()}
 
       {showNote && (
         <InlineNote
