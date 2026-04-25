@@ -38,6 +38,8 @@ CREATE TABLE IF NOT EXISTS notes (
 
 CREATE INDEX IF NOT EXISTS idx_notes_conversation
   ON notes(conversation_id);
+
+ALTER TABLE notes ADD COLUMN IF NOT EXISTS h INTEGER;
 `
 
 let dbPromise: Promise<PGlite> | null = null

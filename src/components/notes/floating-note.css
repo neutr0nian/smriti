@@ -87,6 +87,28 @@
   opacity: 0.45;
 }
 
+/* ── Resize handle ── */
+
+.floating-note__resize {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: var(--space-16);
+  height: var(--space-16);
+  cursor: nwse-resize;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-linear);
+  background: radial-gradient(circle at 100% 100%,
+    transparent 55%,
+    var(--color-ink-muted) 55% 65%,
+    transparent 65%
+  );
+}
+
+.floating-note:hover .floating-note__resize {
+  opacity: 0.5;
+}
+
 /* ── Delete ── */
 
 .floating-note__delete {

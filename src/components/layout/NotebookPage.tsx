@@ -9,15 +9,17 @@ interface NotebookPageProps {
 }
 
 export default function NotebookPage({ children }: NotebookPageProps) {
-  const { floatingNotes, addNote, moveNote, commitNoteMove, updateNote, deleteNote } = useConversation()
+  const { floatingNotes, addNote, moveNote, commitNoteMove, resizeNote, commitNoteResize, updateNote, deleteNote } = useConversation()
 
   const [editingId, setEditingId] = useState<string | null>(null)
   const [toolbar, setToolbar] = useState<{ x: number; y: number } | null>(null)
   const [dragging, setDragging] = useState<{ id: string; dx: number; dy: number } | null>(null)
+  const [resizing, setResizing] = useState<{ id: string; startX: number; startY: number; startW: number; startH: number } | null>(null)
 
   const paperRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const lastDragPosRef = useRef<{ x: number; y: number } | null>(null)
+  const lastResizeSizeRef = useRef<{ w: number; h: number } | null>(null)
 
   // ── Drag ──
   useEffect(() => {
@@ -43,6 +45,31 @@ export default function NotebookPage({ children }: NotebookPageProps) {
       document.removeEventListener('mouseup', onUp)
     }
   }, [dragging, moveNote, commitNoteMove])
+
+  // ── Resize ──
+  useEffect(() => {
+    if (!resizing) return
+    const onMove = (e: MouseEvent) => {
+      const dw = e.clientX - resizing.startX
+      const dh = e.clientY - resizing.startY
+      const w = Math.max(80, resizing.startW + dw)
+      const h = Math.max(40, resizing.startH + dh)
+      lastResizeSizeRef.current = { w, h }
+      resizeNote(resizing.id, w, h)
+    }
+    const onUp = () => {
+      const size = lastResizeSizeRef.current
+      if (size) void commitNoteResize(resizing.id, size.w, size.h)
+      lastResizeSizeRef.current = null
+      setResizing(null)
+    }
+    document.addEventListener('mousemove', onMove)
+    document.addEventListener('mouseup', onUp)
+    return () => {
+      document.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseup', onUp)
+    }
+  }, [resizing, resizeNote, commitNoteResize])
 
   // ── Zone detection ──
   const isInStickyZone = useCallback((clientX: number): boolean => {
@@ -102,6 +129,7 @@ export default function NotebookPage({ children }: NotebookPageProps) {
               onBlur={(text) => { updateNote(note.id, text); setEditingId(null) }}
               onDelete={() => deleteNote(note.id)}
               onDragStart={(e, dx, dy) => { e.stopPropagation(); setDragging({ id: note.id, dx, dy }) }}
+              onResizeStart={(e, w, h) => { e.stopPropagation(); setResizing({ id: note.id, startX: e.clientX, startY: e.clientY, startW: w, startH: h }) }}
             />
           ))}
 

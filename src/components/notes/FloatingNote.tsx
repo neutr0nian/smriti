@@ -10,6 +10,7 @@ interface FloatingNoteProps {
   onBlur: (text: string) => void
   onDelete: () => void
   onDragStart: (e: React.MouseEvent, dx: number, dy: number) => void
+  onResizeStart: (e: React.MouseEvent, currentW: number, currentH: number) => void
 }
 
 const PLACEHOLDER: Record<FloatingNoteData['kind'], string> = {
@@ -17,8 +18,9 @@ const PLACEHOLDER: Record<FloatingNoteData['kind'], string> = {
   scribble: 'scribble a note…',
 }
 
-export default function FloatingNote({ note, editing, onEdit, onBlur, onDelete, onDragStart }: FloatingNoteProps) {
+export default function FloatingNote({ note, editing, onEdit, onBlur, onDelete, onDragStart, onResizeStart }: FloatingNoteProps) {
   const [hover, setHover] = useState(false)
+  const noteRef = useRef<HTMLDivElement>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -40,10 +42,24 @@ export default function FloatingNote({ note, editing, onEdit, onBlur, onDelete, 
 
   const showPlaceholder = !note.text && !editing
 
+  const handleResizeMouseDown = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!noteRef.current) return
+    const rect = noteRef.current.getBoundingClientRect()
+    onResizeStart(e, rect.width, rect.height)
+  }
+
   return (
     <div
+      ref={noteRef}
       className={`floating-note floating-note--${note.kind}${editing ? ' floating-note--editing' : ''}`}
-      style={{ left: note.x, top: note.y, ...(note.kind === 'sticky' && { width: note.w }), transform: `rotate(${note.rot}deg)` }}
+      style={{
+        left: note.x,
+        top: note.y,
+        width: note.w,
+        ...(note.h !== undefined && { height: note.h }),
+        transform: `rotate(${note.rot}deg)`,
+      }}
       onMouseDown={handleMouseDown}
       onDoubleClick={(e) => { e.stopPropagation(); onEdit() }}
       onClick={(e) => e.stopPropagation()}
@@ -72,6 +88,12 @@ export default function FloatingNote({ note, editing, onEdit, onBlur, onDelete, 
           <X size={10} aria-hidden="true" />
         </button>
       )}
+
+      <div
+        className="floating-note__resize"
+        onMouseDown={handleResizeMouseDown}
+        aria-hidden="true"
+      />
     </div>
   )
 }

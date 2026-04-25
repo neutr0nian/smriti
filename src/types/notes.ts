@@ -5,6 +5,7 @@ export interface FloatingNote {
   x: number
   y: number
   w: number
+  h?: number
   rot: number
   text: string
 }

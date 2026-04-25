@@ -17,6 +17,7 @@ import {
   listInlineNotes, listFloatingNotes,
   setInlineNote as apiSetInlineNote, removeInlineNote as apiRemoveInlineNote,
   addFloatingNote as apiAddFloatingNote, moveFloatingNote as apiMoveFloatingNote,
+  resizeFloatingNote as apiResizeFloatingNote,
   updateFloatingNote as apiUpdateFloatingNote, deleteFloatingNote as apiDeleteFloatingNote,
 } from "@/api/notes";
 import { touchConversation } from "@/api/conversations";
@@ -38,6 +39,8 @@ interface ConversationContextValue {
   addNote: (kind: FloatingNote["kind"], x: number, y: number) => void;
   moveNote: (id: string, x: number, y: number) => void;
   commitNoteMove: (id: string, x: number, y: number) => Promise<void>;
+  resizeNote: (id: string, w: number, h: number) => void;
+  commitNoteResize: (id: string, w: number, h: number) => Promise<void>;
   updateNote: (id: string, text: string) => void;
   deleteNote: (id: string) => void;
   setInlineNote: (messageId: string, text: string) => void;
@@ -234,6 +237,14 @@ export function ConversationProvider({ children }: { children: React.ReactNode }
     await apiMoveFloatingNote(id, Math.round(x), Math.round(y));
   }, []);
 
+  const resizeNote = useCallback((id: string, w: number, h: number) => {
+    setFloatingNotes(ns => ns.map(n => (n.id === id ? { ...n, w, h } : n)));
+  }, []);
+
+  const commitNoteResize = useCallback(async (id: string, w: number, h: number) => {
+    await apiResizeFloatingNote(id, Math.round(w), Math.round(h));
+  }, []);
+
   const updateNote = useCallback(async (id: string, text: string) => {
     setFloatingNotes(ns => ns.map(n => (n.id === id ? { ...n, text } : n)));
     await apiUpdateFloatingNote(id, text);
@@ -276,6 +287,8 @@ export function ConversationProvider({ children }: { children: React.ReactNode }
         addNote,
         moveNote,
         commitNoteMove,
+        resizeNote,
+        commitNoteResize,
         updateNote,
         deleteNote,
         setInlineNote,
