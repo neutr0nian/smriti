@@ -1,18 +1,21 @@
 import { useState, useEffect, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { duration } from '@/tokens'
+import { blocksToText } from '@/types/conversation'
+import type { MessageBlock } from '@/types/conversation'
 import TextInput from '@/components/input/TextInput'
 import InlineNote from './InlineNote'
 import MessageToolbar from './MessageToolbar'
+import P5Sketch from './P5Sketch'
 import { useConversation } from '@/context/ConversationContext'
 import './message.css'
 
 interface MessageProps {
   messageId: string
   role: 'user' | 'assistant'
-  children: React.ReactNode
+  blocks: MessageBlock[]
   editing?: boolean
-  versions?: string[]
+  versions?: MessageBlock[][]
   versionIndex?: number
   onStartEdit?: () => void
   onEdit?: (text: string) => void
@@ -21,7 +24,7 @@ interface MessageProps {
 }
 
 export default function Message({
-  messageId, role, children, editing,
+  messageId, role, blocks, editing,
   versions, versionIndex = 0,
   onStartEdit, onEdit, onCancelEdit, onRetry,
 }: MessageProps) {
@@ -66,17 +69,19 @@ export default function Message({
     setToolbar(t => t ? null : { x: e.clientX, y: e.clientY })
   }
 
+  const plainText = blocksToText(blocks)
+
   return (
     <div className="message">
       <div className={`message__header message__header--${role}`}>
-        {role === 'user' ? 'Question' : 'Answer'}
+        {role === 'user' ? 'You' : 'Rancho'}
       </div>
 
       {editing || exiting ? (
         <div className={exiting ? 'animate-slide-up-out' : 'animate-slide-down'}>
           <TextInput
             variant="inline"
-            initialValue={typeof children === 'string' ? children : ''}
+            initialValue={plainText}
             onSubmit={(text) => handleClose(() => onEdit?.(text))}
             onCancel={() => handleClose(() => onCancelEdit?.())}
             submitLabel="Save"
@@ -89,9 +94,14 @@ export default function Message({
           className={`message__body${role === 'assistant' ? ' message__body--markdown' : ''}${slideDir ? ` animate-slide-${slideDir}` : ''}`}
           onClick={handleBodyClick}
         >
-          {role === 'assistant'
-            ? <ReactMarkdown>{typeof children === 'string' ? children : ''}</ReactMarkdown>
-            : children}
+          {blocks.map((block, i) => {
+            if (block.kind === 'sketch') {
+              return <P5Sketch key={i} code={block.code} title={block.title} width={block.width} height={block.height} />
+            }
+            return role === 'assistant'
+              ? <ReactMarkdown key={i}>{block.content}</ReactMarkdown>
+              : <span key={i}>{block.content}</span>
+          })}
         </div>
       )}
 

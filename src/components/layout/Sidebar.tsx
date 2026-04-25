@@ -19,7 +19,7 @@ export default function Sidebar() {
           aria-label={collapsed ? 'Expand sidebar' : undefined}
         >
           <BookOpen size={18} aria-hidden="true" />
-          <h3>Claude Book</h3>
+          <h3>Rancho</h3>
         </button>
 
         {!collapsed && (

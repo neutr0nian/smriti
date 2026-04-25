@@ -16,22 +16,22 @@ export const MOCK_CONVERSATION_DATA: Record<string, ConversationData> = {
       {
         id: 'msg-1',
         role: 'user',
-        text: "I'm trying to understand the light-dependent reactions of photosynthesis. Can you walk me through the big picture first?",
+        blocks: [{ kind: 'text', content: "I'm trying to understand the light-dependent reactions of photosynthesis. Can you walk me through the big picture first?" }],
       },
       {
         id: 'msg-2',
         role: 'assistant',
-        text: "Sure — the light-dependent reactions are the first stage of photosynthesis, and their job is to convert light energy into chemical energy that the second stage (the Calvin cycle) can use.",
+        blocks: [{ kind: 'text', content: "Sure — the light-dependent reactions are the first stage of photosynthesis, and their job is to convert light energy into chemical energy that the second stage (the Calvin cycle) can use." }],
       },
       {
         id: 'msg-3',
         role: 'user',
-        text: 'What exactly gets produced that the Calvin cycle needs?',
+        blocks: [{ kind: 'text', content: 'What exactly gets produced that the Calvin cycle needs?' }],
       },
       {
         id: 'msg-4',
         role: 'assistant',
-        text: 'Two things: ATP (the energy currency) and NADPH (an electron carrier). Both are produced in the thylakoid membranes and then shipped to the stroma where the Calvin cycle runs.',
+        blocks: [{ kind: 'text', content: 'Two things: ATP (the energy currency) and NADPH (an electron carrier). Both are produced in the thylakoid membranes and then shipped to the stroma where the Calvin cycle runs.' }],
       },
     ],
     inlineNotes: [
@@ -47,12 +47,12 @@ export const MOCK_CONVERSATION_DATA: Record<string, ConversationData> = {
       {
         id: 'msg-5',
         role: 'user',
-        text: "How does the Calvin cycle actually use the ATP and NADPH from the light reactions?",
+        blocks: [{ kind: 'text', content: "How does the Calvin cycle actually use the ATP and NADPH from the light reactions?" }],
       },
       {
         id: 'msg-6',
         role: 'assistant',
-        text: "The Calvin cycle uses ATP and NADPH to fix CO₂ into G3P — a 3-carbon sugar that's the building block for glucose. It runs in three phases: carbon fixation, reduction, and regeneration of RuBP.",
+        blocks: [{ kind: 'text', content: "The Calvin cycle uses ATP and NADPH to fix CO₂ into G3P — a 3-carbon sugar that's the building block for glucose. It runs in three phases: carbon fixation, reduction, and regeneration of RuBP." }],
       },
     ],
     inlineNotes: [],
@@ -66,12 +66,12 @@ export const MOCK_CONVERSATION_DATA: Record<string, ConversationData> = {
       {
         id: 'msg-7',
         role: 'user',
-        text: "Can you describe the key structural parts of a chloroplast?",
+        blocks: [{ kind: 'text', content: "Can you describe the key structural parts of a chloroplast?" }],
       },
       {
         id: 'msg-8',
         role: 'assistant',
-        text: "A chloroplast has two outer membranes enclosing the stroma — a fluid-filled space. Inside the stroma are thylakoids, flattened membrane sacs stacked into grana. The light reactions happen in the thylakoid membranes; the Calvin cycle runs in the stroma.",
+        blocks: [{ kind: 'text', content: "A chloroplast has two outer membranes enclosing the stroma — a fluid-filled space. Inside the stroma are thylakoids, flattened membrane sacs stacked into grana. The light reactions happen in the thylakoid membranes; the Calvin cycle runs in the stroma." }],
       },
     ],
     inlineNotes: [],

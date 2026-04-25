@@ -18,8 +18,12 @@ router.post('/', async (req: Request, res: Response) => {
   res.setHeader('Connection', 'keep-alive')
 
   try {
-    for await (const chunk of streamStudyAgent(messages)) {
-      res.write(`data: ${JSON.stringify({ text: chunk })}\n\n`)
+    for await (const event of streamStudyAgent(messages)) {
+      if (event.type === 'text') {
+        res.write(`data: ${JSON.stringify({ text: event.chunk })}\n\n`)
+      } else {
+        res.write(`data: ${JSON.stringify(event)}\n\n`)
+      }
     }
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Stream error'

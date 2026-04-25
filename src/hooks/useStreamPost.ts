@@ -1,4 +1,9 @@
 import { useState, useCallback } from 'react'
+import type { SketchBlock } from '@/types/conversation'
+
+export type StreamEvent =
+  | { type: 'text'; chunk: string }
+  | ({ type: 'sketch' } & Omit<SketchBlock, 'kind'>)
 
 interface UseStreamPostState {
   streaming: boolean
@@ -6,7 +11,7 @@ interface UseStreamPostState {
 }
 
 interface UseStreamPostReturn extends UseStreamPostState {
-  execute: <TBody>(body: TBody, onChunk: (text: string) => void) => Promise<void>
+  execute: <TBody>(body: TBody, onEvent: (event: StreamEvent) => void) => Promise<void>
 }
 
 export function useStreamPost(url: string): UseStreamPostReturn {
@@ -17,7 +22,7 @@ export function useStreamPost(url: string): UseStreamPostReturn {
 
   const execute = useCallback(async <TBody>(
     body: TBody,
-    onChunk: (text: string) => void,
+    onEvent: (event: StreamEvent) => void,
   ): Promise<void> => {
     setState({ streaming: true, error: null })
 
@@ -50,9 +55,27 @@ export function useStreamPost(url: string): UseStreamPostReturn {
           const data = line.slice(6).trim()
           if (data === '[DONE]') return
           try {
-            const parsed = JSON.parse(data) as { text?: string; error?: string }
+            const parsed = JSON.parse(data) as {
+              text?: string
+              type?: string
+              code?: string
+              title?: string
+              width?: number
+              height?: number
+              error?: string
+            }
             if (parsed.error) throw new Error(parsed.error)
-            if (parsed.text) onChunk(parsed.text)
+            if (parsed.type === 'sketch'
+                && typeof parsed.code === 'string' && typeof parsed.title === 'string'
+                && typeof parsed.width === 'number' && typeof parsed.height === 'number') {
+              onEvent({
+                type: 'sketch',
+                code: parsed.code, title: parsed.title,
+                width: parsed.width, height: parsed.height,
+              })
+            } else if (parsed.text) {
+              onEvent({ type: 'text', chunk: parsed.text })
+            }
           } catch (e) {
             if (e instanceof SyntaxError) continue
             throw e

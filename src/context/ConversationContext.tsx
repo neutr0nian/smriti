@@ -7,6 +7,7 @@ import {
   useRef,
 } from "react";
 import type { MessageData, InlineNote } from "@/types/conversation";
+import { blocksToText } from "@/types/conversation";
 import type { FloatingNote } from "@/types/notes";
 import { useStreamPost } from "@/hooks/useStreamPost";
 import { useSidebar } from "./SidebarContext";
@@ -84,7 +85,7 @@ export function ConversationProvider({
 
   const sendMessage = useCallback(
     async (text: string) => {
-      const userMsg: MessageData = { id: makeMsgId(), role: "user", text };
+      const userMsg: MessageData = { id: makeMsgId(), role: "user", blocks: [{ kind: 'text', content: text }] };
       const updatedMessages = [...messagesRef.current, userMsg];
       setMessages(updatedMessages);
       messagesRef.current = updatedMessages;
@@ -93,14 +94,14 @@ export function ConversationProvider({
       const assistantMsg: MessageData = {
         id: assistantId,
         role: "assistant",
-        text: "",
-        versions: [""],
+        blocks: [],
+        versions: [[]],
         versionIndex: 0,
       };
       setMessages((ms) => [...ms, assistantMsg]);
       messagesRef.current = [...messagesRef.current, assistantMsg];
 
-      const history = updatedMessages.map((m) => ({ role: m.role, content: m.text }));
+      const history = updatedMessages.map((m) => ({ role: m.role, content: blocksToText(m.blocks) }));
       await streamIntoVersion({ id: assistantId, versionIndex: 0, history, streamChat, setMessages, messagesRef });
     },
     [streamChat],
@@ -112,23 +113,23 @@ export function ConversationProvider({
       if (idx === -1) return;
 
       const withEdit = messagesRef.current.map((m) =>
-        m.id === id ? { ...m, text } : m,
+        m.id === id ? { ...m, blocks: [{ kind: 'text' as const, content: text }] } : m,
       );
       setMessages(withEdit);
       messagesRef.current = withEdit;
 
       const historyUpToEdit = withEdit
         .slice(0, idx + 1)
-        .map((m) => ({ role: m.role, content: m.text }));
+        .map((m) => ({ role: m.role, content: blocksToText(m.blocks) }));
 
       // Find the next assistant message (N+1) to append a new version to
       const nextMsg = messagesRef.current[idx + 1];
       if (nextMsg?.role === "assistant") {
-        const prevVersions = nextMsg.versions ?? [nextMsg.text];
+        const prevVersions = nextMsg.versions ?? [nextMsg.blocks];
         const newVersionIndex = prevVersions.length;
         const withNewVersion = messagesRef.current.map((m) =>
           m.id === nextMsg.id
-            ? { ...m, text: "", versions: [...prevVersions, ""], versionIndex: newVersionIndex }
+            ? { ...m, blocks: [], versions: [...prevVersions, []], versionIndex: newVersionIndex }
             : m,
         );
         setMessages(withNewVersion);
@@ -140,8 +141,8 @@ export function ConversationProvider({
         const assistantMsg: MessageData = {
           id: assistantId,
           role: "assistant",
-          text: "",
-          versions: [""],
+          blocks: [],
+          versions: [[]],
           versionIndex: 0,
         };
         setMessages((ms) => [...ms, assistantMsg]);
@@ -159,12 +160,12 @@ export function ConversationProvider({
 
     const msg = messagesRef.current[idx];
     if (!msg) return;
-    const prevVersions = msg.versions ?? [msg.text];
+    const prevVersions = msg.versions ?? [msg.blocks];
     const newVersionIndex = prevVersions.length;
 
     const withNewVersion = messagesRef.current.map((m) =>
       m.id === id
-        ? { ...m, text: "", versions: [...prevVersions, ""], versionIndex: newVersionIndex }
+        ? { ...m, blocks: [], versions: [...prevVersions, []], versionIndex: newVersionIndex }
         : m,
     );
     setMessages(withNewVersion);
@@ -172,7 +173,7 @@ export function ConversationProvider({
 
     const history = messagesRef.current
       .slice(0, idx)
-      .map((m) => ({ role: m.role, content: m.text }));
+      .map((m) => ({ role: m.role, content: blocksToText(m.blocks) }));
     await streamIntoVersion({ id, versionIndex: newVersionIndex, history, streamChat, setMessages, messagesRef });
   }, [streamChat]);
 
@@ -180,12 +181,12 @@ export function ConversationProvider({
     setMessages((ms) =>
       ms.map((m) => {
         if (m.id !== id || !m.versions) return m;
-        return { ...m, versionIndex: index, text: m.versions[index] ?? '' };
+        return { ...m, versionIndex: index, blocks: m.versions[index] ?? [] };
       }),
     );
     messagesRef.current = messagesRef.current.map((m) => {
       if (m.id !== id || !m.versions) return m;
-      return { ...m, versionIndex: index, text: m.versions[index] ?? '' };
+      return { ...m, versionIndex: index, blocks: m.versions[index] ?? [] };
     });
   }, []);
 

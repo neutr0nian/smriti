@@ -34,6 +34,7 @@ function PageContent() {
             key={m.id}
             messageId={m.id}
             role={m.role}
+            blocks={m.blocks}
             editing={editingId === m.id}
             versions={m.versions}
             versionIndex={m.versionIndex}
@@ -41,9 +42,7 @@ function PageContent() {
             onEdit={(text) => { editMessage(m.id, text); setEditingId(null) }}
             onCancelEdit={() => setEditingId(null)}
             onRetry={m.role === 'assistant' ? () => retryMessage(m.id) : undefined}
-          >
-            {m.text}
-          </Message>
+          />
         ))}
         {responding && (
           <div className="response-loader">

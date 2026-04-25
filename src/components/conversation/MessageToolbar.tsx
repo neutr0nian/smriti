@@ -1,6 +1,7 @@
 import { createPortal } from 'react-dom'
 import { Pencil, RotateCcw, StickyNote, ChevronLeft, ChevronRight } from 'lucide-react'
 import Tooltip from '@/components/tooltip/Tooltip'
+import type { MessageBlock } from '@/types/conversation'
 import { useConversation } from '@/context/ConversationContext'
 import './message-toolbar.css'
 
@@ -9,7 +10,7 @@ interface MessageToolbarProps {
   role: 'user' | 'assistant'
   x: number
   y: number
-  versions?: string[]
+  versions?: MessageBlock[][]
   versionIndex?: number
   onEdit?: () => void
   onNote?: () => void

@@ -1,8 +1,30 @@
+export interface TextBlock {
+  kind: 'text'
+  content: string
+}
+
+export interface SketchBlock {
+  kind: 'sketch'
+  code: string
+  title: string
+  width: number
+  height: number
+}
+
+export type MessageBlock = TextBlock | SketchBlock
+
+export function blocksToText(blocks: MessageBlock[]): string {
+  return blocks
+    .filter((b): b is TextBlock => b.kind === 'text')
+    .map(b => b.content)
+    .join('')
+}
+
 export interface MessageData {
   id: string
   role: 'user' | 'assistant'
-  text: string
-  versions?: string[]
+  blocks: MessageBlock[]
+  versions?: MessageBlock[][]
   versionIndex?: number
 }
 
