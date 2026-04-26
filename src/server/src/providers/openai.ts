@@ -90,19 +90,18 @@ export const createOpenAIProvider = ({
 
     for (const call of toolCalls) {
       if (call.type !== 'function') continue
+      let toolResult = 'Tool call skipped.'
       let args: unknown
-      try { args = JSON.parse(call.function.arguments) } catch { continue }
+      try { args = JSON.parse(call.function.arguments) } catch { /* leave default result */ }
       if (call.function.name === 'render_p5_sketch' && isSketchArgs(args)) {
-        const code = decodeOverEscapedString(args.code)
-        const width = clamp(Math.round(args.width), SKETCH_BOUNDS.width.min, SKETCH_BOUNDS.width.max)
-        const height = clamp(Math.round(args.height), SKETCH_BOUNDS.height.min, SKETCH_BOUNDS.height.max)
-        yield { type: 'sketch', code, title: args.title, width, height }
-        messages.push({
-          role: 'tool',
-          tool_call_id: call.id,
-          content: `Sketch "${args.title}" rendered inline.`,
-        })
+        const code = decodeOverEscapedString((args as SketchArgs).code)
+        const width = clamp(Math.round((args as SketchArgs).width), SKETCH_BOUNDS.width.min, SKETCH_BOUNDS.width.max)
+        const height = clamp(Math.round((args as SketchArgs).height), SKETCH_BOUNDS.height.min, SKETCH_BOUNDS.height.max)
+        yield { type: 'sketch', code, title: (args as SketchArgs).title, width, height }
+        toolResult = `Sketch "${(args as SketchArgs).title}" rendered inline.`
       }
+      // Every tool_call_id must have a matching tool message or round 2 gets a 400
+      messages.push({ role: 'tool', tool_call_id: call.id, content: toolResult })
     }
 
     const round2 = await client.chat.completions.create({

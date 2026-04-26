@@ -95,7 +95,7 @@ export default function TextInput({
         rows={1}
       />
       <div className="text-input__actions">
-        <Button text={submitLabel} color="accent" size="md" type="submit" disabled={disabled} />
+        <Button text={submitLabel} color="accent" size="md" type="submit" disabled={disabled || !value.trim()} />
       </div>
     </form>
   )
