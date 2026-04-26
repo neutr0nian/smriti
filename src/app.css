@@ -8,7 +8,13 @@
 .response-loader {
   display: flex;
   align-items: center;
-  padding: var(--space-12) 0 var(--space-4);
+  padding: var(--space-12) var(--space-8) var(--space-4);
+}
+
+@media (min-width: 600px) {
+  .response-loader {
+    padding-inline: var(--space-12);
+  }
 }
 
 .response-error {

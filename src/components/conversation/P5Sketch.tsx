@@ -46,15 +46,18 @@ function setup() {
   createCanvas(${width}, ${height});
   smooth();
   pixelDensity(2);
+  frameRate(30);
+}
+function draw() {
+  clear();
   strokeWeight(1);
+  stroke(PALETTE.text);
+  fill(PALETTE.primary);
   textFont('-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif');
   textSize(14);
   textAlign(CENTER, CENTER);
-  stroke(PALETTE.text);
-  fill(PALETTE.primary);
 ${safeCode}
 }
-function draw() {}
   </script>
 </body>
 </html>`
