@@ -24,11 +24,16 @@ export default function NotebookPage({ children }: NotebookPageProps) {
   // ── Drag ──
   useEffect(() => {
     if (!dragging) return
-    const onMove = (e: MouseEvent) => {
+    const getPos = (e: MouseEvent | TouchEvent) => {
+      const src = e instanceof TouchEvent ? (e.touches[0] ?? e.changedTouches[0]) : e
+      return { clientX: src?.clientX ?? 0, clientY: src?.clientY ?? 0 }
+    }
+    const onMove = (e: MouseEvent | TouchEvent) => {
       if (!paperRef.current) return
+      const { clientX, clientY } = getPos(e)
       const paperRect = paperRef.current.getBoundingClientRect()
-      const x = Math.max(0, e.clientX - paperRect.left - dragging.dx)
-      const y = Math.max(0, e.clientY - paperRect.top - dragging.dy)
+      const x = clientX - paperRect.left - dragging.dx
+      const y = clientY - paperRect.top - dragging.dy
       lastDragPosRef.current = { x, y }
       moveNote(dragging.id, x, y)
     }
@@ -40,18 +45,27 @@ export default function NotebookPage({ children }: NotebookPageProps) {
     }
     document.addEventListener('mousemove', onMove)
     document.addEventListener('mouseup', onUp)
+    document.addEventListener('touchmove', onMove, { passive: false })
+    document.addEventListener('touchend', onUp)
     return () => {
       document.removeEventListener('mousemove', onMove)
       document.removeEventListener('mouseup', onUp)
+      document.removeEventListener('touchmove', onMove)
+      document.removeEventListener('touchend', onUp)
     }
   }, [dragging, moveNote, commitNoteMove])
 
   // ── Resize ──
   useEffect(() => {
     if (!resizing) return
-    const onMove = (e: MouseEvent) => {
-      const dw = e.clientX - resizing.startX
-      const dh = e.clientY - resizing.startY
+    const getPos = (e: MouseEvent | TouchEvent) => {
+      const src = e instanceof TouchEvent ? (e.touches[0] ?? e.changedTouches[0]) : e
+      return { clientX: src?.clientX ?? 0, clientY: src?.clientY ?? 0 }
+    }
+    const onMove = (e: MouseEvent | TouchEvent) => {
+      const { clientX, clientY } = getPos(e)
+      const dw = clientX - resizing.startX
+      const dh = clientY - resizing.startY
       const w = Math.max(80, resizing.startW + dw)
       const h = Math.max(40, resizing.startH + dh)
       lastResizeSizeRef.current = { w, h }
@@ -65,9 +79,13 @@ export default function NotebookPage({ children }: NotebookPageProps) {
     }
     document.addEventListener('mousemove', onMove)
     document.addEventListener('mouseup', onUp)
+    document.addEventListener('touchmove', onMove, { passive: false })
+    document.addEventListener('touchend', onUp)
     return () => {
       document.removeEventListener('mousemove', onMove)
       document.removeEventListener('mouseup', onUp)
+      document.removeEventListener('touchmove', onMove)
+      document.removeEventListener('touchend', onUp)
     }
   }, [resizing, resizeNote, commitNoteResize])
 
@@ -118,8 +136,6 @@ export default function NotebookPage({ children }: NotebookPageProps) {
             {children}
           </div>
 
-          <p className="notebook-page__page-number">— 1 —</p>
-
           {floatingNotes.map(note => (
             <FloatingNote
               key={note.id}
@@ -128,8 +144,8 @@ export default function NotebookPage({ children }: NotebookPageProps) {
               onEdit={() => setEditingId(note.id)}
               onBlur={(text) => { updateNote(note.id, text); setEditingId(null) }}
               onDelete={() => deleteNote(note.id)}
-              onDragStart={(e, dx, dy) => { e.stopPropagation(); setDragging({ id: note.id, dx, dy }) }}
-              onResizeStart={(e, w, h) => { e.stopPropagation(); setResizing({ id: note.id, startX: e.clientX, startY: e.clientY, startW: w, startH: h }) }}
+              onDragStart={(dx, dy) => setDragging({ id: note.id, dx, dy })}
+              onResizeStart={(startX, startY, w, h) => setResizing({ id: note.id, startX, startY, startW: w, startH: h })}
             />
           ))}
 

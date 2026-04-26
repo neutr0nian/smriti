@@ -9,8 +9,8 @@ interface FloatingNoteProps {
   onEdit: () => void
   onBlur: (text: string) => void
   onDelete: () => void
-  onDragStart: (e: React.MouseEvent, dx: number, dy: number) => void
-  onResizeStart: (e: React.MouseEvent, currentW: number, currentH: number) => void
+  onDragStart: (dx: number, dy: number) => void
+  onResizeStart: (startX: number, startY: number, currentW: number, currentH: number) => void
 }
 
 const PLACEHOLDER: Record<FloatingNoteData['kind'], string> = {
@@ -36,18 +36,36 @@ export default function FloatingNote({ note, editing, onEdit, onBlur, onDelete, 
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (editing) return
+    e.stopPropagation()
     const rect = e.currentTarget.getBoundingClientRect()
-    onDragStart(e, e.clientX - rect.left, e.clientY - rect.top)
+    onDragStart(e.clientX - rect.left, e.clientY - rect.top)
   }
 
-  const showPlaceholder = !note.text && !editing
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (editing) return
+    e.stopPropagation()
+    const touch = e.touches[0]
+    if (!touch) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    onDragStart(touch.clientX - rect.left, touch.clientY - rect.top)
+  }
 
   const handleResizeMouseDown = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (!noteRef.current) return
     const rect = noteRef.current.getBoundingClientRect()
-    onResizeStart(e, rect.width, rect.height)
+    onResizeStart(e.clientX, e.clientY, rect.width, rect.height)
   }
+
+  const handleResizeTouchStart = (e: React.TouchEvent) => {
+    e.stopPropagation()
+    const touch = e.touches[0]
+    if (!touch || !noteRef.current) return
+    const rect = noteRef.current.getBoundingClientRect()
+    onResizeStart(touch.clientX, touch.clientY, rect.width, rect.height)
+  }
+
+  const showPlaceholder = !note.text && !editing
 
   return (
     <div
@@ -61,6 +79,7 @@ export default function FloatingNote({ note, editing, onEdit, onBlur, onDelete, 
         transform: `rotate(${note.rot}deg)`,
       }}
       onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
       onDoubleClick={(e) => { e.stopPropagation(); onEdit() }}
       onClick={(e) => e.stopPropagation()}
       onMouseEnter={() => setHover(true)}
@@ -83,6 +102,7 @@ export default function FloatingNote({ note, editing, onEdit, onBlur, onDelete, 
           type="button"
           className="floating-note__delete"
           onMouseDown={(e) => { e.stopPropagation(); onDelete() }}
+          onTouchStart={(e) => { e.stopPropagation(); onDelete() }}
           aria-label="Delete note"
         >
           <X size={10} aria-hidden="true" />
@@ -92,6 +112,7 @@ export default function FloatingNote({ note, editing, onEdit, onBlur, onDelete, 
       <div
         className="floating-note__resize"
         onMouseDown={handleResizeMouseDown}
+        onTouchStart={handleResizeTouchStart}
         aria-hidden="true"
       />
     </div>

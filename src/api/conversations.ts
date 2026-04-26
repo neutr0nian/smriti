@@ -1,5 +1,9 @@
 import type { ConversationMeta } from '@/types/conversation'
+import { blocksToText } from '@/types/conversation'
 import { getDb } from '@/db/client'
+import { listMessages } from './messages'
+
+const API_URL = 'http://localhost:3001'
 
 interface ConversationRow {
   id: string
@@ -50,4 +54,22 @@ export async function touchConversation(id: string): Promise<void> {
 export async function deleteConversation(id: string): Promise<void> {
   const db = await getDb()
   await db.query(`DELETE FROM conversations WHERE id = $1`, [id])
+}
+
+export async function generateTitle(conversationId: string): Promise<string> {
+  const messages = await listMessages(conversationId)
+  const chatMessages = messages.map(m => ({
+    role: m.role,
+    content: blocksToText(m.blocks),
+  }))
+
+  const res = await fetch(`${API_URL}/api/title`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: chatMessages }),
+  })
+
+  if (!res.ok) throw new Error('Title generation failed')
+  const data = await res.json() as { title: string }
+  return data.title
 }

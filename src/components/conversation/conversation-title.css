@@ -1,5 +1,11 @@
 .conversation-title {
-  margin-bottom: var(--space-40);
+  margin-bottom: var(--space-24);
+}
+
+@media (min-width: 900px) {
+  .conversation-title {
+    margin-bottom: var(--space-40);
+  }
 }
 
 .conversation-title__subject {
@@ -28,7 +34,7 @@
   outline: none;
   background: transparent;
   font: inherit;
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: var(--text-3xl);
   color: var(--color-ink);
 }

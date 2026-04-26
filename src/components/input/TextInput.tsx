@@ -10,6 +10,7 @@ interface TextInputProps {
   submitLabel?: string
   variant?: 'fixed' | 'inline'
   disabled?: boolean
+  centered?: boolean
 }
 
 export default function TextInput({
@@ -20,6 +21,7 @@ export default function TextInput({
   submitLabel = 'Ask',
   variant = 'fixed',
   disabled,
+  centered,
 }: TextInputProps) {
   const [value, setValue] = useState(initialValue)
   const [multiLine, setMultiLine] = useState(false)
@@ -100,5 +102,5 @@ export default function TextInput({
 
   if (variant === 'inline') return form
 
-  return <div className="text-input">{form}</div>
+  return <div className={`text-input${centered ? ' text-input--centered' : ''}`}>{form}</div>
 }

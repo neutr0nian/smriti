@@ -31,7 +31,7 @@ export default function P5Sketch({ code, title, width, height }: P5SketchProps) 
       document.body.innerText = 'Sketch error: ' + (e.error?.message ?? e.message)
     })
     const PALETTE = {
-      text:    '#2D2A25',
+      text:    '#f3f6f4',
       primary: '#4A4540',
       muted:   '#8A8578',
       accent:  '#D97757',
@@ -46,7 +46,7 @@ function setup() {
   createCanvas(${width}, ${height});
   smooth();
   pixelDensity(2);
-  strokeWeight(2);
+  strokeWeight(1);
   textFont('-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif');
   textSize(14);
   textAlign(CENTER, CENTER);

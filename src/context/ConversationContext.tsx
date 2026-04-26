@@ -54,10 +54,19 @@ const NOTE_DEFAULTS: Record<FloatingNote["kind"], { w: number; rot: number }> = 
   scribble: { w: 220, rot: -2 },
 };
 
-export function ConversationProvider({ children }: { children: React.ReactNode }) {
+interface ConversationProviderProps {
+  children: React.ReactNode
+  initialMessage?: string | null
+  onInitialMessageSent?: () => void
+}
+
+export function ConversationProvider({ children, initialMessage, onInitialMessageSent }: ConversationProviderProps) {
   const { activeConversationId, conversationList } = useSidebar();
 
   const messagesRef = useRef<MessageData[]>([]);
+  const initialMessageFiredRef = useRef(false);
+  const sendMessageRef = useRef<(text: string) => void>(() => {});
+  const onInitialMessageSentRef = useRef(onInitialMessageSent);
   const {
     streaming: responding,
     error: responseError,
@@ -87,9 +96,14 @@ export function ConversationProvider({ children }: { children: React.ReactNode }
       messagesRef.current = msgs;
       setInlineNotes(inline);
       setFloatingNotes(floating);
+      if (initialMessage && !initialMessageFiredRef.current) {
+        initialMessageFiredRef.current = true;
+        sendMessageRef.current(initialMessage);
+        onInitialMessageSentRef.current?.();
+      }
     });
     return () => { cancelled = true };
-  }, [activeConversationId]);
+  }, [activeConversationId, initialMessage]);
 
   const activeConversation = conversationList.find(c => c.id === activeConversationId);
   const title = activeConversation?.title ?? "";
@@ -269,6 +283,9 @@ export function ConversationProvider({ children }: { children: React.ReactNode }
     setInlineNotes(ns => ns.filter(n => n.messageId !== messageId));
     await apiRemoveInlineNote(messageId);
   }, []);
+
+  sendMessageRef.current = sendMessage;
+  onInitialMessageSentRef.current = onInitialMessageSent;
 
   return (
     <ConversationContext.Provider

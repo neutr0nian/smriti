@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import type { ConversationMeta } from '@/types/conversation'
-import { listConversations, createConversation, deleteConversation, renameConversation } from '@/api/conversations'
+import { listConversations, createConversation, deleteConversation, renameConversation, generateTitle } from '@/api/conversations'
 
 interface SidebarContextValue {
   conversationList: ConversationMeta[]
@@ -56,8 +56,10 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     setConversationList(list => list.map(c => c.id === id ? { ...c, title } : c))
   }, [])
 
-  const generateConversationTitle = useCallback(async (_id: string) => {
-    console.warn('generateConversationTitle: not implemented yet')
+  const generateConversationTitle = useCallback(async (id: string) => {
+    const title = await generateTitle(id)
+    await renameConversation(id, title)
+    setConversationList(list => list.map(c => c.id === id ? { ...c, title } : c))
   }, [])
 
   return (

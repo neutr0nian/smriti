@@ -25,11 +25,11 @@ export default function Sidebar() {
         <button
           type="button"
           className="sidebar__logo"
-          onClick={collapsed ? toggleSidebar : undefined}
-          aria-label={collapsed ? 'Expand sidebar' : undefined}
+          onClick={collapsed ? toggleSidebar : () => setActiveConversationId('')}
+          aria-label={collapsed ? 'Expand sidebar' : 'Go home'}
         >
           <BookOpen size={18} aria-hidden="true" />
-          <h3>Rancho</h3>
+          <h3>rancho</h3>
         </button>
 
         {!collapsed && (
@@ -49,7 +49,7 @@ export default function Sidebar() {
       <button
         type="button"
         className="sidebar__new-chat"
-        onClick={() => { void addConversation() }}
+        onClick={() => setActiveConversationId('')}
         aria-label="New chat"
       >
         <Plus size={16} aria-hidden="true" />
